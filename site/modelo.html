@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Próxima compra</title>
+<meta name="description" content="Recomendação dos 10 próximos produtos com o que a pessoa viu, comprou e pesquisou. Sete modelos medidos no mesmo teste.">
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --text:#14181d; --text2:#3b434d; --muted:#67707c; --line:#e1e4e9; --line2:#eef0f3;
+  --accent:#1f4e79; --accent2:#2f6aa3; --accent-soft:#e7eff8; --bar:#9aa3ae; --bar-soft:#eceef1;
+  --ok:#17714a; --ok-soft:#e3f3ea; --new:#7a4b00; --new-soft:#fbf0dc; --focus:#2f6aa3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1216; --card:#171b21; --text:#eef1f4; --text2:#c3cad3; --muted:#8e98a5; --line:#29303a; --line2:#20262e;
+    --accent:#8bbcec; --accent2:#a9cdf1; --accent-soft:#1a2836; --bar:#5d6773; --bar-soft:#232a33;
+    --ok:#6fd3a0; --ok-soft:#15281e; --new:#f0c062; --new-soft:#2b2312; --focus:#8bbcec;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1216; --card:#171b21; --text:#eef1f4; --text2:#c3cad3; --muted:#8e98a5; --line:#29303a; --line2:#20262e;
+  --accent:#8bbcec; --accent2:#a9cdf1; --accent-soft:#1a2836; --bar:#5d6773; --bar-soft:#232a33;
+  --ok:#6fd3a0; --ok-soft:#15281e; --new:#f0c062; --new-soft:#2b2312; --focus:#8bbcec;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+a{color:var(--accent);text-underline-offset:2px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+@media (max-width:640px){.wrap{padding:0 16px}}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+/* topo */
+header.top{border-bottom:1px solid var(--line);background:var(--card)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand b{font-size:17px;letter-spacing:-.01em}
+.brand span{color:var(--muted);font-size:13px}
+.top-actions{display:flex;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:transparent;padding:6px 11px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#0b1520}}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#0b1520}
+.gh{font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:6px 11px}
+/* abertura */
+.hero{padding:36px 0 8px}
+.hero h1{font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px;max-width:980px}
+.hero p{color:var(--text2);font-size:17px;max-width:820px;margin:0}
+@media (max-width:640px){.hero{padding:22px 0 4px}.hero h1{font-size:25px}.hero p{font-size:15px}}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0 8px}
+@media (max-width:900px){.kpis{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpi .v{font-size:28px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi .l{color:var(--text2);font-size:13px;line-height:1.35;margin-top:2px}
+@media (max-width:640px){.kpi .v{font-size:23px}}
+section{padding:26px 0 6px}
+h2{font-size:22px;letter-spacing:-.01em;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 14px;max-width:860px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+/* tabela de resultados */
+.tbl-wrap{overflow-x:auto}
+table.res{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:760px}
+table.res th,table.res td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line2);vertical-align:middle}
+table.res th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700}
+table.res tr:last-child td{border-bottom:0}
+table.res tr.best td{background:var(--accent-soft)}
+.mname{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:1px;background:var(--accent-soft);color:var(--accent)}
+.barcell{min-width:240px}
+.bar{display:flex;align-items:center;gap:10px}
+.bar .track{flex:1;height:10px;border-radius:5px;background:var(--bar-soft);position:relative;overflow:hidden}
+.bar .fill{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--bar)}
+.bar .fill.b{background:var(--accent2)}
+.bar .num{width:50px;text-align:right;font-weight:700}
+.ci{color:var(--muted);font-size:12px;white-space:nowrap}
+.desc{color:var(--muted);font-size:12px;max-width:300px}
+.metas{display:none;color:var(--muted);font-size:12px;margin-top:2px}
+@media (max-width:640px){
+  table.res{min-width:0}
+  table.res th:nth-child(n+3),table.res td:nth-child(n+3){display:none}
+  table.res td,table.res th{padding:9px 10px}
+  .barcell{min-width:0;width:46%}
+  .desc{display:none}
+  .metas{display:block}
+  ol.recs .it small{display:block;margin-left:0}
+}
+.legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin:10px 2px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.callout{border-left:3px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;padding:12px 16px;margin:14px 0 0;color:var(--text2)}
+.callout b{color:var(--text)}
+/* explorador */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.controls select{font:inherit;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--text);max-width:100%}
+.nav{display:flex;gap:8px;align-items:center;min-width:0}
+@media (max-width:640px){.nav{width:100%}.nav select{flex:1;min-width:0}}
+.iconbtn{border:1px solid var(--line);background:var(--card);border-radius:9px;padding:7px 11px;cursor:pointer;font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2)}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.explore{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:14px}
+@media (max-width:900px){.explore{grid-template-columns:1fr}}
+.pane{padding:16px}
+.pane h3{font-size:15px;margin:0 0 10px}
+.pane h4{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:14px 0 8px}
+.ev{display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line2);font-size:14px}
+.ev:last-child{border-bottom:0}
+.ev .k{flex:0 0 74px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding-top:2px}
+.ev .d{flex:1;min-width:0;color:var(--text2)}
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.p{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:7px;padding:1px 7px;font-size:12.5px;background:var(--card);white-space:nowrap}
+.p.buy{border-color:var(--ok);color:var(--ok);background:var(--ok-soft);font-weight:700}
+.p.hl{border-color:var(--accent2);color:var(--accent)}
+.summary{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.score{font-weight:700;font-size:15px}
+.score span{color:var(--ok)}
+ol.recs{list-style:none;margin:0;padding:0}
+ol.recs li{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line2)}
+ol.recs li:last-child{border-bottom:0}
+ol.recs .r{color:var(--muted);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+ol.recs .it{font-weight:600}
+ol.recs .it small{color:var(--muted);font-weight:400;margin-left:6px}
+ol.recs .why{color:var(--text2);font-size:13.5px;margin-top:1px}
+.badge{font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 8px;white-space:nowrap}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.new{background:var(--new-soft);color:var(--new)}
+ol.recs li.hit{background:linear-gradient(90deg,var(--ok-soft),transparent 70%)}
+.note{color:var(--muted);font-size:13px;margin:10px 0 0}
+.promo{padding:14px 16px;margin-top:14px}
+.promo .row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line2);font-size:14px}
+.promo .row:last-child{border-bottom:0}
+.sim{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:var(--new-soft);color:var(--new);border-radius:6px;padding:2px 7px;margin-left:8px;vertical-align:2px}
+/* como medimos */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:900px){.grid3{grid-template-columns:1fr}}
+.box{padding:14px 16px}
+.box h3{font-size:15px;margin:0 0 6px}
+.box p,.box li{color:var(--text2);font-size:14px}
+.box ul{margin:6px 0 0;padding-left:18px}
+.box li{margin:3px 0}
+footer{color:var(--muted);font-size:13px;padding:26px 0 40px;border-top:1px solid var(--line);margin-top:26px}
+footer p{margin:4px 0}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>Próxima compra</b><span data-t="autor">Rafael Bueno · projeto de portfólio</span></div>
+    <div class="top-actions">
+      <div class="seg" role="group" aria-label="Idioma / Language">
+        <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="gh" href="https://github.com/Bueno-00/proxima-compra" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <h1 data-t="h1">Os 10 produtos que a pessoa vai comprar, com o porquê</h1>
+    <p data-t="lead"></p>
+  </div>
+  <div class="kpis" id="kpis"></div>
+
+  <section id="comparacao">
+    <h2 data-t="cmp_h">Os 7 jeitos, no mesmo teste</h2>
+    <p class="sub" data-t="cmp_sub"></p>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Leitura" id="seg-leitura-1">
+        <button type="button" data-leitura="geral" aria-pressed="true" data-t="l_geral">Tudo que comprou</button>
+        <button type="button" data-leitura="descoberta" aria-pressed="false" data-t="l_desc">Só produtos novos</button>
+      </div>
+    </div>
+    <div class="card tbl-wrap"><table class="res" id="tabela"></table></div>
+    <div class="legend"><span><i style="background:var(--accent2)"></i><span data-t="leg_b">usa a busca</span></span><span><i style="background:var(--bar)"></i><span data-t="leg_n">não usa a busca</span></span><span data-t="leg_ci">Entre parênteses: intervalo de 95% (sorteio das visitas, 1.000 vezes)</span></div>
+    <div class="callout" id="efeito"></div>
+  </section>
+
+  <section id="visita">
+    <h2 data-t="vis_h">Veja uma visita de verdade</h2>
+    <p class="sub" data-t="vis_sub"></p>
+    <div class="controls">
+      <div class="nav">
+        <button class="iconbtn" type="button" id="ant" aria-label="Visita anterior">&larr;</button>
+        <select id="sel" aria-label="Escolha a visita"></select>
+        <button class="iconbtn" type="button" id="prox" aria-label="Próxima visita">&rarr;</button>
+      </div>
+      <div class="seg" role="group" aria-label="Leitura" id="seg-leitura-2">
+        <button type="button" data-leitura="geral" aria-pressed="true" data-t="l_geral">Tudo que comprou</button>
+        <button type="button" data-leitura="descoberta" aria-pressed="false" data-t="l_desc">Só produtos novos</button>
+      </div>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Modelo"></div>
+    <div class="explore">
+      <div class="card pane" id="hist"></div>
+      <div class="card pane" id="recs"></div>
+    </div>
+    <div class="card promo" id="promo"></div>
+  </section>
+
+  <section id="como">
+    <h2 data-t="como_h">Como medimos e o que fica de fora</h2>
+    <p class="sub" data-t="como_sub"></p>
+    <div class="grid3" id="como-grid"></div>
+  </section>
+
+  <footer>
+    <p data-t="rodape1"></p>
+    <p data-t="rodape2"></p>
+  </footer>
+</main>
+
+<script id="dados" type="application/json">__DADOS__</script>
+<script>
+(function(){
+"use strict";
+var D = JSON.parse(document.getElementById("dados").textContent);
+var R = D.resultados, M = R.modelos, P = R.protocolo;
+var estado = {lang:"pt", leitura:"geral", visita:0, modelo:"hibrido_com_busca"};
+try { var s = localStorage.getItem("pc-lang"); if (s === "en" || s === "pt") estado.lang = s; } catch(e) {}
+
+var NOMES = {
+  pt:{popularidade:"Mais vendidos", visto:"Repetir o que viu ou comprou", coocorrencia:"Item a item", sequencial:"Sequencial (SASRec)", busca:"Só a busca", hibrido_sem_busca:"Híbrido sem busca", hibrido_com_busca:"Híbrido com busca"},
+  en:{popularidade:"Best sellers", visto:"Repeat what you viewed or bought", coocorrencia:"Item to item", sequencial:"Sequential (SASRec)", busca:"Search only", hibrido_sem_busca:"Hybrid without search", hibrido_com_busca:"Hybrid with search"}
+};
+var DESC = {
+  pt:{popularidade:"Os 10 mais vendidos dos últimos 28 dias, iguais para todo mundo.", visto:"Os produtos que a pessoa viu ou comprou, do mais recente ao mais antigo.", coocorrencia:"Quem viu o que você viu comprou isto (conta pares de produtos nas visitas).", sequencial:"Rede neural pequena que lê a ordem do que você viu e prevê o próximo.", busca:"Os produtos que a loja mostrou nas suas buscas, os que você clicou e os que têm os termos digitados.", hibrido_sem_busca:"Junta os 4 primeiros e reordena com LightGBM.", hibrido_com_busca:"O mesmo híbrido, com os sinais da busca também."},
+  en:{popularidade:"Top 10 sellers of the last 28 days, the same for everyone.", visto:"Products the person viewed or bought, most recent first.", coocorrencia:"People who viewed what you viewed bought this (counts product pairs in visits).", sequencial:"Small neural network that reads the order of what you viewed and predicts the next one.", busca:"Products the store showed in your searches, the ones you clicked and the ones matching the typed terms.", hibrido_sem_busca:"Combines the first 4 and reranks them with LightGBM.", hibrido_com_busca:"The same hybrid, plus the search signals."}
+};
+
+var T = {
+  pt:{
+    autor:"Rafael Bueno · projeto de portfólio",
+    h1:"Os 10 produtos que a pessoa vai comprar, com o porquê",
+    lead:"Comparamos 7 jeitos de sugerir a próxima compra numa loja online real. A pergunta principal: usar também o que a pessoa <b>pesquisou</b>, e não só o que ela viu e comprou, melhora a sugestão? Tudo medido no mesmo teste, com dados que nenhum modelo viu no treino.",
+    cmp_h:"Os 7 jeitos, no mesmo teste",
+    cmp_sub:"Teste: as {casos} visitas com compra de maio de 2016. Os modelos só conhecem o que aconteceu até 30/04/2016. Para cada visita, o modelo olha o que a pessoa viu e pesquisou antes de pagar e sugere 10 produtos.",
+    l_geral:"Tudo que comprou", l_desc:"Só produtos novos",
+    th_modelo:"Modelo", th_recall:"Recall@10", th_ndcg:"NDCG@10", th_acerto:"Acertou 1+", th_cob:"Cobertura", th_lat:"Tempo por pessoa",
+    leg_b:"usa a busca", leg_n:"não usa a busca", leg_ci:"Entre parênteses: intervalo de 95% (sorteio das visitas, 1.000 vezes)",
+    vis_h:"Veja uma visita de verdade",
+    vis_sub:"{n} visitas sorteadas do teste (não escolhidas a dedo). À esquerda, o que a pessoa fez antes de pagar. À direita, os 10 sugeridos pelo modelo escolhido e quais ela comprou de fato.",
+    visita:"Visita", logada:"logada", texto:"digitou busca", novo_tag:"comprou produto novo", sem_novos:"Nesta visita ela só comprou o que já tinha visto, então não há produto novo para acertar. Troque de visita (as marcadas com \"comprou produto novo\") ou volte para \"tudo que comprou\".",
+    antes:"Antes de pagar", buscas:"Buscas", vistos:"Viu nesta visita", vistos_antes:"Viu em visitas anteriores", compras_antes:"Comprou antes", comprou:"Comprou nesta visita",
+    busca_texto_l:"Digitou {n} termo(s)", busca_cat:"Abriu a categoria {c}", busca_mostrou:"a loja mostrou {n} produtos", clicou:"clicou em",
+    hoje:"nesta visita", sem:"nada", mais:"e mais {n}",
+    sug:"Sugestões: {m}", acertos:"<span>{a}</span> dos 10 foram comprados nesta visita", acertos_desc:"<span>{a}</span> dos 10 produtos novos foram comprados",
+    b_ok:"Comprou", b_new:"Novo para ela",
+    nota_desc:"Em \"só produtos novos\" saem da lista os produtos que a pessoa já tinha visto; conta só acertar o que ela comprou sem ter visto antes.",
+    nota_nomes:"Os nomes aparecem como números porque a loja trocou cada palavra por um código antes de liberar os dados. Com uma base de vendas real, o mesmo código mostraria \"Whey 900 g chocolate\".",
+    promo_h:"Aviso de promoção", promo_sim:"simulação", promo_sub:"A ideia: avisar quando o que a pessoa costuma comprar ou ver entra em promoção. A base pública não tem preço por dia, então os preços abaixo são inventados para mostrar o aviso funcionando. Não entra nos números.",
+    promo_vazio:"Nenhum produto habitual desta pessoa está em promoção na simulação.", promo_de:"de R$ {a} por R$ {b}", promo_comprou:"você já comprou", promo_viu:"você costuma ver",
+    como_h:"Como medimos e o que fica de fora",
+    como_sub:"Divisão por data, mesmo teste para todos, números com intervalo. O que a base pública não permite medir está escrito aqui.",
+    c1h:"O teste", c1:"<ul><li>Base: Diginetica (CIKM Cup 2016), loja online real: {views} visualizações, {buscas} buscas e {compras} compras de jan a jun de 2016.</li><li>Treino até 31/03 para ajustar o híbrido em abril; treino até 30/04 para medir em maio.</li><li>Cada caso é uma visita com compra, cortada no momento de pagar.</li></ul>",
+    c2h:"As medidas", c2:"<ul><li><b>Recall@10</b>: dos produtos que ela comprou, quantos estavam entre os 10.</li><li><b>NDCG@10</b>: o mesmo, valendo mais acertar no topo da lista.</li><li><b>Cobertura</b>: quanto do catálogo aparece em alguma lista (baixa = sugere sempre os mesmos).</li><li><b>Tempo</b>: para montar a lista de uma pessoa, num computador comum, sem placa de vídeo.</li></ul>",
+    c3h:"Limites honestos", c3:"<ul><li>Na base, quase ninguém está logado: o sinal \"comprou antes\" aparece em só {ca} das {casos} visitas. No iFood todo mundo está logado.</li><li>\"Busca\" aqui é quase sempre abrir uma categoria; só {txt} visitas digitaram termos.</li><li>Sem preço por dia: a promoção é simulação.</li><li>Teste offline: mostra o que daria certo no passado, não substitui um teste A/B.</li></ul>",
+    rodape1:"Dados: Diginetica, CIKM Cup 2016 (trilha 2), uso de pesquisa. Os dados brutos não ficam no repositório: o script baixa da fonte. Código sob licença MIT.",
+    rodape2:"Feito por Rafael Bueno, com apoio de IA. Medido em {data}.",
+    k1:"das visitas com pelo menos 1 dos 10 comprado (híbrido com busca)",
+    k2:"de recall a mais com a busca, nos produtos que a pessoa ainda não tinha visto",
+    k3:"de recall a mais com a busca, contando tudo que ela comprou",
+    k4:"para montar a lista de uma pessoa (híbrido com busca, CPU)",
+    efeito:"<b>Quanto a busca ajuda.</b> Mesmo modelo, com e sem os sinais da busca, comparado visita a visita: <b>{dg}</b> pontos de recall@10 contando tudo que ela comprou (intervalo {dg1} a {dg2}) e <b>{dd}</b> pontos nos produtos novos (intervalo {dd1} a {dd2}). {conclusao}",
+    conc_sim:"Os dois intervalos ficam acima de zero: a busca ajuda de verdade, e ajuda mais justamente onde é difícil, no produto que a pessoa ainda não viu.",
+    conc_parcial:"A busca ajuda mais nos produtos novos; no total, o ganho é menor.",
+    conc_nao:"Aqui a busca não mostrou ganho claro.",
+    m_comprou:"Você comprou em {dia}", m_viu_agora:"Você viu nesta visita ({n}x)", m_viu_antes:"Você viu em {dia}",
+    m_conversao:"Quem vê, compra: {n} compras em {de} visualizações", m_cooc_comprou:"Quem viu o {item} (que você viu) comprou este", m_cooc_viu:"Costuma ser visto junto com o {item}, que você viu",
+    m_seq:"Costuma vir depois do {item}, o último que você viu", m_busca_clique:"Você clicou nele numa busca {quando}", m_busca_lista:"Apareceu em {pos}º na sua busca {onde}, {quando}",
+    m_busca_texto:"O nome tem termo(s) que você digitou: {termos}", m_pop:"Um dos mais vendidos do mês", m_pop_pos:"{pos}º mais vendido do mês",
+    ate:"a", onde_cat:"na categoria {c}", onde_txt:"por {t}", em:"em {dia}", produto:"Produto {i}", cat:"categoria {c}", preco:"faixa de preço {p}"
+  },
+  en:{
+    autor:"Rafael Bueno · portfolio project",
+    h1:"The 10 products a person will buy next, and why",
+    lead:"We compare 7 ways to suggest the next purchase in a real online store. The main question: does using what the person <b>searched</b> for, and not only what they viewed and bought, make suggestions better? Everything is measured on the same test, with data no model saw during training.",
+    cmp_h:"7 approaches, one test",
+    cmp_sub:"Test: the {casos} visits with a purchase in May 2016. Models only know what happened until 04/30/2016. For each visit, the model looks at what the person viewed and searched before paying and suggests 10 products.",
+    l_geral:"Everything bought", l_desc:"New products only",
+    th_modelo:"Model", th_recall:"Recall@10", th_ndcg:"NDCG@10", th_acerto:"Hit 1+", th_cob:"Coverage", th_lat:"Time per person",
+    leg_b:"uses search", leg_n:"does not use search", leg_ci:"In parentheses: 95% interval (visits resampled 1,000 times)",
+    vis_h:"Look at a real visit",
+    vis_sub:"{n} visits drawn at random from the test (not cherry-picked). Left: what the person did before paying. Right: the 10 products the chosen model suggested and which ones they actually bought.",
+    visita:"Visit", logada:"logged in", texto:"typed a search", novo_tag:"bought something new", sem_novos:"In this visit they only bought what they had already viewed, so there is no new product to get right. Pick another visit (the ones marked \"bought something new\") or go back to \"everything bought\".",
+    antes:"Before paying", buscas:"Searches", vistos:"Viewed in this visit", vistos_antes:"Viewed in earlier visits", compras_antes:"Bought before", comprou:"Bought in this visit",
+    busca_texto_l:"Typed {n} term(s)", busca_cat:"Opened category {c}", busca_mostrou:"the store showed {n} products", clicou:"clicked",
+    hoje:"in this visit", sem:"nothing", mais:"and {n} more",
+    sug:"Suggestions: {m}", acertos:"<span>{a}</span> of the 10 were bought in this visit", acertos_desc:"<span>{a}</span> of the 10 new products were bought",
+    b_ok:"Bought", b_new:"New to them",
+    nota_desc:"In \"new products only\", products the person had already viewed are removed; only buying something they had not seen before counts.",
+    nota_nomes:"Names show up as numbers because the store replaced every word with a code before releasing the data. With real sales data, the same code would show \"Whey 900 g chocolate\".",
+    promo_h:"Sale alert", promo_sim:"simulation", promo_sub:"The idea: tell the person when what they usually buy or view goes on sale. The public data has no daily prices, so the prices below are made up to show the alert working. Not part of the numbers.",
+    promo_vazio:"None of this person's usual products is on sale in the simulation.", promo_de:"from R$ {a} to R$ {b}", promo_comprou:"you bought it before", promo_viu:"you usually view it",
+    como_h:"How we measured and what is left out",
+    como_sub:"Split by date, same test for everyone, numbers with intervals. What the public data cannot measure is written here.",
+    c1h:"The test", c1:"<ul><li>Data: Diginetica (CIKM Cup 2016), a real online store: {views} product views, {buscas} searches and {compras} purchases from Jan to Jun 2016.</li><li>Training until 03/31 to fit the hybrid on April; training until 04/30 to measure on May.</li><li>Each case is a visit with a purchase, cut at the moment of paying.</li></ul>",
+    c2h:"The metrics", c2:"<ul><li><b>Recall@10</b>: of the products bought, how many were among the 10.</li><li><b>NDCG@10</b>: the same, but hits at the top count more.</li><li><b>Coverage</b>: how much of the catalog shows up in some list (low = always the same suggestions).</li><li><b>Time</b>: to build one person's list on a regular computer, no GPU.</li></ul>",
+    c3h:"Honest limits", c3:"<ul><li>Almost nobody is logged in: the \"bought before\" signal shows up in only {ca} of {casos} visits. On iFood everyone is logged in.</li><li>\"Search\" here is mostly opening a category; only {txt} visits typed terms.</li><li>No daily prices: the sale alert is a simulation.</li><li>Offline test: shows what would have worked in the past; it does not replace an A/B test.</li></ul>",
+    rodape1:"Data: Diginetica, CIKM Cup 2016 (track 2), research use. Raw data is not in the repository: the script downloads it from the source. Code under the MIT license.",
+    rodape2:"Built by Rafael Bueno, with AI assistance. Measured on {data}.",
+    k1:"of visits with at least 1 of the 10 bought (hybrid with search)",
+    k2:"more recall with search, on products the person had not seen yet",
+    k3:"more recall with search, counting everything bought",
+    k4:"to build one person's list (hybrid with search, CPU)",
+    efeito:"<b>How much search helps.</b> Same model, with and without the search signals, compared visit by visit: <b>{dg}</b> recall@10 points counting everything bought (interval {dg1} to {dg2}) and <b>{dd}</b> points on new products (interval {dd1} to {dd2}). {conclusao}",
+    conc_sim:"Both intervals stay above zero: search really helps, and it helps more exactly where it is hard, on products the person has not seen yet.",
+    conc_parcial:"Search helps more on new products; overall the gain is smaller.",
+    conc_nao:"Here search showed no clear gain.",
+    m_comprou:"You bought it on {dia}", m_viu_agora:"You viewed it in this visit ({n}x)", m_viu_antes:"You viewed it on {dia}",
+    m_conversao:"Viewers buy it: {n} purchases in {de} views", m_cooc_comprou:"People who viewed {item} (you did too) bought this", m_cooc_viu:"Often viewed together with {item}, which you viewed",
+    m_seq:"Usually comes after {item}, the last one you viewed", m_busca_clique:"You clicked it in a search {quando}", m_busca_lista:"Ranked #{pos} in your search {onde}, {quando}",
+    m_busca_texto:"Its name has term(s) you typed: {termos}", m_pop:"One of the month's best sellers", m_pop_pos:"#{pos} best seller of the month",
+    ate:"to", onde_cat:"in category {c}", onde_txt:"for {t}", em:"on {dia}", produto:"Product {i}", cat:"category {c}", preco:"price band {p}"
+  }
+};
+
+function t(k, v){ var s = (T[estado.lang][k] || T.pt[k] || k); if (v) for (var x in v) s = s.split("{"+x+"}").join(v[x]); return s; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+function num(x, d){ return x.toLocaleString(estado.lang === "pt" ? "pt-BR" : "en-US", {minimumFractionDigits:d, maximumFractionDigits:d}); }
+function pct(x, d){ return num(x*100, d === undefined ? 1 : d) + "%"; }
+function pts(x){ var v = x*100; return (v >= 0 ? "+" : "") + num(v, 1); }
+function ms(x){ return x < 0.1 ? "&lt; " + num(0.1, 1) + " ms" : num(x, 1) + " ms"; }
+function inteiro(x){ return x.toLocaleString(estado.lang === "pt" ? "pt-BR" : "en-US"); }
+function data(iso){ var p = iso.split("-"); return estado.lang === "pt" ? p[2]+"/"+p[1]+"/"+p[0] : p[1]+"/"+p[2]+"/"+p[0]; }
+function prod(i){ return "#" + i; }
+function termos(lista){ return lista.map(function(x){ return "«" + x + "»"; }).join(" "); }
+
+function motivo(m, visita){
+  var quando = function(dia, atual){ return (atual || dia === visita.dia) ? t("hoje") : t("em", {dia:data(dia)}); };
+  switch (m.cod) {
+    case "comprou": return t("m_comprou", {dia:data(m.dia)});
+    case "viu_agora": return t("m_viu_agora", {n:m.n});
+    case "viu_antes": return t("m_viu_antes", {dia:data(m.dia)});
+    case "conversao": return t("m_conversao", {n:inteiro(m.n), de:inteiro(m.de)});
+    case "cooc_comprou": return t("m_cooc_comprou", {item:prod(m.item)});
+    case "cooc_viu": return t("m_cooc_viu", {item:prod(m.item)});
+    case "seq": return m.itens && m.itens.length ? t("m_seq", {item:prod(m.itens[0])}) : t("m_pop");
+    case "busca_clique": return t("m_busca_clique", {quando:quando(m.dia, m.atual)});
+    case "busca_lista": return t("m_busca_lista", {pos:m.pos, onde:(m.termos && m.termos.length ? t("onde_txt", {t:termos(m.termos)}) : t("onde_cat", {c:m.cat})), quando:quando(m.dia, m.atual)});
+    case "busca_texto": return t("m_busca_texto", {termos:termos(m.termos || [])});
+    default: return m.pos ? t("m_pop_pos", {pos:m.pos}) : t("m_pop");
+  }
+}
+
+function aplicarTextos(){
+  document.documentElement.lang = estado.lang === "pt" ? "pt-BR" : "en";
+  var pc = P.teste.casos;
+  var vars = {casos:inteiro(pc.casos), n:D.visitas.length, views:inteiro(1235380), buscas:inteiro(923127), compras:inteiro(18025),
+              ca:inteiro(pc.com_compra_anterior), txt:inteiro(pc.com_busca_texto), data:data(D.medido_em || "2026-11-08")};
+  document.querySelectorAll("[data-t]").forEach(function(el){ el.innerHTML = t(el.getAttribute("data-t"), vars); });
+  document.querySelectorAll("[data-lang]").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-lang") === estado.lang ? "true" : "false"); });
+  document.getElementById("ant").setAttribute("aria-label", estado.lang === "pt" ? "Visita anterior" : "Previous visit");
+  document.getElementById("prox").setAttribute("aria-label", estado.lang === "pt" ? "Próxima visita" : "Next visit");
+  var grid = document.getElementById("como-grid");
+  grid.innerHTML = ["1","2","3"].map(function(k){ return '<div class="card box"><h3>' + t("c"+k+"h") + "</h3>" + t("c"+k, vars) + "</div>"; }).join("");
+}
+
+function kpis(){
+  var h = M.hibrido_com_busca, e = R.efeito_da_busca;
+  var cards = [
+    [pts(e.descoberta.recall.media) + " pts", t("k2")],
+    [pts(e.geral.recall.media) + " pts", t("k3")],
+    [pct(h.geral.acerto.media, 0), t("k1")],
+    [num(h.latencia_ms.mediana, 0) + " ms", t("k4")]
+  ];
+  document.getElementById("kpis").innerHTML = cards.map(function(c){ return '<div class="kpi"><div class="v">' + c[0] + '</div><div class="l">' + c[1] + "</div></div>"; }).join("");
+}
+
+function tabela(){
+  var L = estado.leitura, ordem = D.ordem;
+  var maxR = Math.max.apply(null, ordem.map(function(n){ return M[n][L].recall.media; })) || 1;
+  var melhor = ordem.reduce(function(a, n){ return M[n][L].recall.media > M[a][L].recall.media ? n : a; }, ordem[0]);
+  var h = "<thead><tr><th>" + t("th_modelo") + '</th><th class="barcell">' + t("th_recall") + "</th><th>" + t("th_ndcg") + "</th><th>" + t("th_acerto") + "</th><th>" + t("th_cob") + "</th><th>" + t("th_lat") + "</th></tr></thead><tbody>";
+  ordem.forEach(function(n){
+    var m = M[n], g = m[L];
+    h += '<tr class="' + (n === melhor ? "best" : "") + '"><td><div class="mname">' + esc(NOMES[estado.lang][n]) + (m.usa_busca ? '<span class="tag">' + t("leg_b") + "</span>" : "") + '</div><div class="desc">' + esc(DESC[estado.lang][n]) + "</div></td>";
+    h += '<td class="barcell"><div class="bar"><div class="track"><div class="fill' + (m.usa_busca ? " b" : "") + '" style="width:' + (100*g.recall.media/maxR).toFixed(1) + '%"></div></div><div class="num">' + pct(g.recall.media) + '</div></div><div class="ci">(' + pct(g.recall.ic95[0]) + " " + t("ate") + " " + pct(g.recall.ic95[1]) + ')</div><div class="metas">NDCG ' + num(g.ndcg.media, 3) + " · " + t("th_acerto") + " " + pct(g.acerto.media, 0) + " · " + ms(m.latencia_ms.mediana) + "</div></td>";
+    h += "<td>" + num(g.ndcg.media, 3) + "</td><td>" + pct(g.acerto.media, 0) + "</td><td>" + pct(m.cobertura, 2) + "</td><td>" + ms(m.latencia_ms.mediana) + "</td></tr>";
+  });
+  document.getElementById("tabela").innerHTML = h + "</tbody>";
+  var e = R.efeito_da_busca, g = e.geral.recall, d = e.descoberta.recall;
+  var conc = (g.ic95[0] > 0 && d.ic95[0] > 0) ? t("conc_sim") : (d.ic95[0] > 0 ? t("conc_parcial") : t("conc_nao"));
+  document.getElementById("efeito").innerHTML = t("efeito", {dg:pts(g.media), dg1:pts(g.ic95[0]), dg2:pts(g.ic95[1]), dd:pts(d.media), dd1:pts(d.ic95[0]), dd2:pts(d.ic95[1]), conclusao:conc});
+}
+
+function seletor(){
+  var sel = document.getElementById("sel");
+  sel.innerHTML = D.visitas.map(function(v, k){
+    var extra = []; if (v.novos && v.novos.length) extra.push(t("novo_tag")); if (v.texto) extra.push(t("texto")); if (v.logado) extra.push(t("logada"));
+    return '<option value="' + k + '">' + t("visita") + " " + (k+1) + " / " + D.visitas.length + " · " + data(v.dia) + (extra.length ? " · " + extra.join(", ") : "") + "</option>";
+  }).join("");
+  sel.value = String(estado.visita);
+  document.getElementById("chips").innerHTML = D.ordem.map(function(n){
+    return '<button type="button" class="chip" data-modelo="' + n + '" aria-pressed="' + (n === estado.modelo) + '">' + esc(NOMES[estado.lang][n]) + "</button>";
+  }).join("");
+}
+
+function pill(i, compras, destaque){
+  var cls = "p" + (compras.indexOf(i) >= 0 ? " buy" : "") + (destaque && destaque.indexOf(i) >= 0 ? " hl" : "");
+  return '<span class="' + cls + '" title="' + esc(infoProduto(i)) + '">' + prod(i) + "</span>";
+}
+function metaProduto(p){ return t("cat", {c:p.c}) + (p.p ? " · " + t("preco", {p:p.p}) : ""); }
+function infoProduto(i){ var p = D.produtos[String(i)]; if (!p) return prod(i); return t("produto", {i:prod(i)}) + " · " + metaProduto(p); }
+function lista(itens, compras, destaque, limite){
+  if (!itens.length) return '<span class="ci">' + t("sem") + "</span>";
+  var mostrar = itens.slice(-limite), resto = itens.length - mostrar.length;
+  return '<div class="pills">' + mostrar.map(function(i){ return pill(i, compras, destaque); }).join("") + (resto > 0 ? '<span class="ci">' + t("mais", {n:resto}) + "</span>" : "") + "</div>";
+}
+
+function visita(){
+  var v = D.visitas[estado.visita], H = v.hist, compras = v.comprou;
+  var recs = v[estado.leitura][estado.modelo];
+  var sugeridos = recs.map(function(r){ return r.item; });
+  var h = "<h3>" + t("antes") + ' <span class="ci">· ' + data(v.dia) + "</span></h3>";
+  if (H.compras_antes.length) h += "<h4>" + t("compras_antes") + "</h4>" + lista(H.compras_antes.map(function(x){ return x.item; }), compras, sugeridos, 6);
+  if (H.vistos_antes.length) h += "<h4>" + t("vistos_antes") + "</h4>" + lista(H.vistos_antes.map(function(x){ return x.item; }), compras, sugeridos, 10);
+  h += "<h4>" + t("buscas") + " (" + H.n_buscas + ")</h4>";
+  h += H.buscas.slice(-5).map(function(b){
+    var tit = b.termos.length ? t("busca_texto_l", {n:b.termos.length}) + ": " + termos(b.termos) : t("busca_cat", {c:b.cat});
+    var cl = b.cliques.length ? " · " + t("clicou") + " " + b.cliques.map(function(i){ return pill(i, compras, sugeridos); }).join(" ") : "";
+    return '<div class="ev"><div class="k">' + (b.atual ? t("hoje") : data(b.dia)) + '</div><div class="d">' + esc(tit) + ", " + t("busca_mostrou", {n:b.n_mostrados}) + cl + "</div></div>";
+  }).join("");
+  h += "<h4>" + t("vistos") + " (" + H.n_vistos_agora + ")</h4>" + lista(H.vistos_agora, compras, sugeridos, 15);
+  h += "<h4>" + t("comprou") + "</h4>" + '<div class="pills">' + compras.map(function(i){ return pill(i, compras, null); }).join("") + "</div>";
+  h += '<p class="note">' + t("nota_nomes") + "</p>";
+  document.getElementById("hist").innerHTML = h;
+
+  var acertos = recs.filter(function(r){ return r.ok; }).length;
+  var r = '<div class="summary"><h3 style="margin:0">' + t("sug", {m:esc(NOMES[estado.lang][estado.modelo])}) + '</h3><div class="score">' + t(estado.leitura === "geral" ? "acertos" : "acertos_desc", {a:acertos}) + "</div></div>";
+  r += '<ol class="recs">' + recs.map(function(x, k){
+    var p = D.produtos[String(x.item)] || {c:"?", p:"?"};
+    var badges = (x.ok ? '<span class="badge ok">' + t("b_ok") + "</span>" : "") + (x.novo && estado.leitura === "geral" ? ' <span class="badge new">' + t("b_new") + "</span>" : "");
+    return '<li class="' + (x.ok ? "hit" : "") + '"><div class="r">' + (k+1) + '</div><div><div class="it">' + t("produto", {i:prod(x.item)}) + "<small>" + metaProduto(p) + '</small></div><div class="why">' + esc(motivo(x.m, v)) + "</div></div><div>" + badges + "</div></li>";
+  }).join("") + "</ol>";
+  if (estado.leitura === "descoberta") r += '<p class="note">' + ((v.novos && v.novos.length) ? t("nota_desc") : t("sem_novos")) + "</p>";
+  document.getElementById("recs").innerHTML = r;
+
+  var pr = "<h3>" + t("promo_h") + '<span class="sim">' + t("promo_sim") + '</span></h3><p class="note" style="margin:0 0 8px">' + t("promo_sub") + "</p>";
+  pr += v.promo.length ? v.promo.map(function(a){
+    return '<div class="row"><div>' + t("produto", {i:prod(a.item)}) + ' <span class="ci">· ' + (a.comprou ? t("promo_comprou") : t("promo_viu")) + '</span></div><div><b>-' + num(a.desconto*100, 0) + "%</b> " + '<span class="ci">' + t("promo_de", {a:num(a.normal, 2), b:num(a.hoje, 2)}) + "</span></div></div>";
+  }).join("") : '<p class="note" style="margin:0">' + t("promo_vazio") + "</p>";
+  document.getElementById("promo").innerHTML = pr;
+  document.getElementById("sel").value = String(estado.visita);
+}
+
+function leitura(nova){
+  estado.leitura = nova;
+  document.querySelectorAll("[data-leitura]").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-leitura") === nova ? "true" : "false"); });
+  tabela(); visita();
+}
+function tudo(){ aplicarTextos(); kpis(); tabela(); seletor(); visita(); }
+
+document.addEventListener("click", function(ev){
+  var b = ev.target.closest("button"); if (!b) return;
+  if (b.hasAttribute("data-lang")) { estado.lang = b.getAttribute("data-lang"); try { localStorage.setItem("pc-lang", estado.lang); } catch(e) {} tudo(); }
+  else if (b.hasAttribute("data-leitura")) leitura(b.getAttribute("data-leitura"));
+  else if (b.hasAttribute("data-modelo")) { estado.modelo = b.getAttribute("data-modelo"); document.querySelectorAll("[data-modelo]").forEach(function(c){ c.setAttribute("aria-pressed", c === b ? "true" : "false"); }); visita(); }
+  else if (b.id === "ant") { estado.visita = (estado.visita - 1 + D.visitas.length) % D.visitas.length; visita(); }
+  else if (b.id === "prox") { estado.visita = (estado.visita + 1) % D.visitas.length; visita(); }
+});
+document.getElementById("sel").addEventListener("change", function(e){ estado.visita = +e.target.value; visita(); });
+tudo();
+})();
+</script>
+</body>
+</html>

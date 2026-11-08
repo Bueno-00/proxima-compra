@@ -1,0 +1,556 @@
+{
+  "base": "Diginetica, CIKM Cup 2016 trilha 2 (loja online real, nomes e buscas cifrados)",
+  "protocolo": {
+    "validacao": {
+      "corte": "2016-04-01",
+      "casos": {
+        "casos": 3904,
+        "itens_alvo": 5439,
+        "logados": 578,
+        "com_compra_anterior": 55,
+        "com_busca": 3883,
+        "com_busca_texto": 354,
+        "com_visto": 3838
+      }
+    },
+    "teste": {
+      "corte": "2016-05-01",
+      "casos": {
+        "casos": 3985,
+        "itens_alvo": 5445,
+        "logados": 643,
+        "com_compra_anterior": 83,
+        "com_busca": 3972,
+        "com_busca_texto": 276,
+        "com_visto": 3946
+      },
+      "casos_descoberta": 1499,
+      "itens_descoberta": 2155
+    },
+    "catalogo_ativo": 104874,
+    "k": 10
+  },
+  "modelos": {
+    "popularidade": {
+      "usa_busca": false,
+      "geral": {
+        "recall": {
+          "media": 0.0056,
+          "ic95": [
+            0.0033,
+            0.0079
+          ]
+        },
+        "ndcg": {
+          "media": 0.0031,
+          "ic95": [
+            0.0019,
+            0.0045
+          ]
+        },
+        "acerto": {
+          "media": 0.0075,
+          "ic95": [
+            0.005,
+            0.0105
+          ]
+        }
+      },
+      "descoberta": {
+        "recall": {
+          "media": 0.0052,
+          "ic95": [
+            0.0023,
+            0.0088
+          ]
+        },
+        "ndcg": {
+          "media": 0.0025,
+          "ic95": [
+            0.0011,
+            0.0043
+          ]
+        },
+        "acerto": {
+          "media": 0.0073,
+          "ic95": [
+            0.004,
+            0.012
+          ]
+        }
+      },
+      "cobertura": 0.0001,
+      "itens_distintos": 10,
+      "latencia_ms": {
+        "mediana": 0.02,
+        "p95": 0.03
+      }
+    },
+    "visto": {
+      "usa_busca": false,
+      "geral": {
+        "recall": {
+          "media": 0.6728,
+          "ic95": [
+            0.6594,
+            0.6862
+          ]
+        },
+        "ndcg": {
+          "media": 0.6028,
+          "ic95": [
+            0.5902,
+            0.6156
+          ]
+        },
+        "acerto": {
+          "media": 0.7348,
+          "ic95": [
+            0.7217,
+            0.7486
+          ]
+        }
+      },
+      "descoberta": {
+        "recall": {
+          "media": 0.0052,
+          "ic95": [
+            0.0023,
+            0.0088
+          ]
+        },
+        "ndcg": {
+          "media": 0.0025,
+          "ic95": [
+            0.0011,
+            0.0043
+          ]
+        },
+        "acerto": {
+          "media": 0.0073,
+          "ic95": [
+            0.004,
+            0.012
+          ]
+        }
+      },
+      "cobertura": 0.1038,
+      "itens_distintos": 10891,
+      "latencia_ms": {
+        "mediana": 0.01,
+        "p95": 0.03
+      }
+    },
+    "coocorrencia": {
+      "usa_busca": false,
+      "geral": {
+        "recall": {
+          "media": 0.2411,
+          "ic95": [
+            0.2285,
+            0.2538
+          ]
+        },
+        "ndcg": {
+          "media": 0.1849,
+          "ic95": [
+            0.1749,
+            0.1953
+          ]
+        },
+        "acerto": {
+          "media": 0.2748,
+          "ic95": [
+            0.2607,
+            0.2886
+          ]
+        }
+      },
+      "descoberta": {
+        "recall": {
+          "media": 0.0275,
+          "ic95": [
+            0.0203,
+            0.0354
+          ]
+        },
+        "ndcg": {
+          "media": 0.0204,
+          "ic95": [
+            0.0145,
+            0.0269
+          ]
+        },
+        "acerto": {
+          "media": 0.034,
+          "ic95": [
+            0.0254,
+            0.0434
+          ]
+        }
+      },
+      "cobertura": 0.0483,
+      "itens_distintos": 5066,
+      "latencia_ms": {
+        "mediana": 0.43,
+        "p95": 2.34
+      }
+    },
+    "sequencial": {
+      "usa_busca": false,
+      "geral": {
+        "recall": {
+          "media": 0.3417,
+          "ic95": [
+            0.3279,
+            0.356
+          ]
+        },
+        "ndcg": {
+          "media": 0.2203,
+          "ic95": [
+            0.2111,
+            0.2308
+          ]
+        },
+        "acerto": {
+          "media": 0.3834,
+          "ic95": [
+            0.3694,
+            0.3982
+          ]
+        }
+      },
+      "descoberta": {
+        "recall": {
+          "media": 0.079,
+          "ic95": [
+            0.0673,
+            0.0922
+          ]
+        },
+        "ndcg": {
+          "media": 0.0446,
+          "ic95": [
+            0.0375,
+            0.0529
+          ]
+        },
+        "acerto": {
+          "media": 0.0914,
+          "ic95": [
+            0.0774,
+            0.1061
+          ]
+        }
+      },
+      "cobertura": 0.0785,
+      "itens_distintos": 8235,
+      "latencia_ms": {
+        "mediana": 3.02,
+        "p95": 10.05
+      }
+    },
+    "busca": {
+      "usa_busca": true,
+      "geral": {
+        "recall": {
+          "media": 0.5924,
+          "ic95": [
+            0.5781,
+            0.6068
+          ]
+        },
+        "ndcg": {
+          "media": 0.5208,
+          "ic95": [
+            0.5085,
+            0.5339
+          ]
+        },
+        "acerto": {
+          "media": 0.6607,
+          "ic95": [
+            0.6472,
+            0.6753
+          ]
+        }
+      },
+      "descoberta": {
+        "recall": {
+          "media": 0.2651,
+          "ic95": [
+            0.2443,
+            0.2858
+          ]
+        },
+        "ndcg": {
+          "media": 0.213,
+          "ic95": [
+            0.1957,
+            0.2312
+          ]
+        },
+        "acerto": {
+          "media": 0.3129,
+          "ic95": [
+            0.2902,
+            0.3369
+          ]
+        }
+      },
+      "cobertura": 0.1231,
+      "itens_distintos": 12911,
+      "latencia_ms": {
+        "mediana": 0.13,
+        "p95": 3.08
+      }
+    },
+    "hibrido_sem_busca": {
+      "usa_busca": false,
+      "geral": {
+        "recall": {
+          "media": 0.7029,
+          "ic95": [
+            0.6894,
+            0.7157
+          ]
+        },
+        "ndcg": {
+          "media": 0.6164,
+          "ic95": [
+            0.604,
+            0.6293
+          ]
+        },
+        "acerto": {
+          "media": 0.7664,
+          "ic95": [
+            0.7538,
+            0.7799
+          ]
+        }
+      },
+      "descoberta": {
+        "recall": {
+          "media": 0.1167,
+          "ic95": [
+            0.1018,
+            0.1331
+          ]
+        },
+        "ndcg": {
+          "media": 0.0657,
+          "ic95": [
+            0.0565,
+            0.0756
+          ]
+        },
+        "acerto": {
+          "media": 0.1328,
+          "ic95": [
+            0.1167,
+            0.1501
+          ]
+        }
+      },
+      "cobertura": 0.1545,
+      "itens_distintos": 16203,
+      "latencia_ms": {
+        "mediana": 16.89,
+        "p95": 55.02
+      }
+    },
+    "hibrido_com_busca": {
+      "usa_busca": true,
+      "geral": {
+        "recall": {
+          "media": 0.7728,
+          "ic95": [
+            0.7606,
+            0.7835
+          ]
+        },
+        "ndcg": {
+          "media": 0.6718,
+          "ic95": [
+            0.6603,
+            0.6832
+          ]
+        },
+        "acerto": {
+          "media": 0.8381,
+          "ic95": [
+            0.8263,
+            0.8499
+          ]
+        }
+      },
+      "descoberta": {
+        "recall": {
+          "media": 0.3234,
+          "ic95": [
+            0.3007,
+            0.3457
+          ]
+        },
+        "ndcg": {
+          "media": 0.2578,
+          "ic95": [
+            0.2391,
+            0.277
+          ]
+        },
+        "acerto": {
+          "media": 0.3742,
+          "ic95": [
+            0.3509,
+            0.3983
+          ]
+        }
+      },
+      "cobertura": 0.1735,
+      "itens_distintos": 18196,
+      "latencia_ms": {
+        "mediana": 24.65,
+        "p95": 95.01
+      }
+    }
+  },
+  "efeito_da_busca": {
+    "geral": {
+      "recall": {
+        "media": 0.06986641080522549,
+        "ic95": [
+          0.061422117048408664,
+          0.07811321561246833
+        ],
+        "p_sem_ganho": 0.0
+      },
+      "ndcg": {
+        "media": 0.055431530563191604,
+        "ic95": [
+          0.049056980377148625,
+          0.062015162496952964
+        ],
+        "p_sem_ganho": 0.0
+      }
+    },
+    "descoberta": {
+      "recall": {
+        "media": 0.206720617978123,
+        "ic95": [
+          0.184710865444688,
+          0.22740546607791437
+        ],
+        "p_sem_ganho": 0.0
+      },
+      "ndcg": {
+        "media": 0.19219254466579666,
+        "ic95": [
+          0.17400705682376832,
+          0.21083754283079106
+        ],
+        "p_sem_ganho": 0.0
+      }
+    }
+  },
+  "recortes": {
+    "com_busca_texto": {
+      "casos": 276,
+      "recall": {
+        "sem_busca": 0.5762,
+        "com_busca": 0.664
+      }
+    },
+    "sem_busca_texto": {
+      "casos": 3709,
+      "recall": {
+        "sem_busca": 0.7124,
+        "com_busca": 0.7809
+      }
+    }
+  },
+  "treino_hibridos": {
+    "hibrido_sem_busca": {
+      "casos_treino": 2437,
+      "casos_valid": 610,
+      "linhas": 219051,
+      "arvores": 80,
+      "importancia": {
+        "visto_nota": 171891.9,
+        "vistas_atual": 5874.0,
+        "vistas_antes": 197.7,
+        "recencia": 18690.2,
+        "comprou_antes": 7.0,
+        "cooc_vp": 725.6,
+        "cooc_vv": 7607.0,
+        "cooc_rank": 340.8,
+        "seq_nota": 1520.3,
+        "seq_rank": 2292.7,
+        "pop_compras": 394.9,
+        "pop_vistas": 1975.7,
+        "conversao": 2279.5,
+        "preco_nivel": 290.6,
+        "mesma_categoria_vista": 3509.8,
+        "caso_n_vistos": 1700.7,
+        "caso_logado": 78.4
+      }
+    },
+    "hibrido_com_busca": {
+      "casos_treino": 2695,
+      "casos_valid": 674,
+      "linhas": 373379,
+      "arvores": 31,
+      "importancia": {
+        "visto_nota": 120950.7,
+        "vistas_atual": 22848.1,
+        "vistas_antes": 266.6,
+        "recencia": 38037.8,
+        "comprou_antes": 13.1,
+        "cooc_vp": 421.4,
+        "cooc_vv": 2886.9,
+        "cooc_rank": 157.2,
+        "seq_nota": 587.3,
+        "seq_rank": 1298.1,
+        "pop_compras": 82.4,
+        "pop_vistas": 954.9,
+        "conversao": 634.6,
+        "preco_nivel": 118.1,
+        "mesma_categoria_vista": 1843.5,
+        "caso_n_vistos": 637.8,
+        "caso_logado": 22.2,
+        "busca_nota": 15339.2,
+        "busca_melhor_pos": 1857.0,
+        "busca_vezes": 236.7,
+        "busca_clique": 39497.5,
+        "busca_texto": 38.4,
+        "busca_ultima": 257.6,
+        "categoria_buscada": 472.5,
+        "caso_n_buscas": 1202.8,
+        "caso_n_buscas_texto": 29.7
+      }
+    }
+  },
+  "sequencial_log": {
+    "validacao": [
+      "época 1: perda 7.263 (295 s)",
+      "época 2: perda 6.552 (525 s)",
+      "época 3: perda 5.522 (559 s)",
+      "época 4: perda 4.480 (620 s)",
+      "carregado de seq_validacao.pt"
+    ],
+    "teste": [
+      "época 1: perda 7.008 (120 s)",
+      "época 2: perda 5.650 (350 s)",
+      "época 3: perda 4.337 (541 s)",
+      "época 4: perda 3.496 (643 s)",
+      "carregado de seq_teste.pt"
+    ]
+  },
+  "maquina": {
+    "cpu": "x86_64",
+    "python": "3.12.3"
+  },
+  "segundos_total": 374.9
+}
