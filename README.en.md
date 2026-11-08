@@ -16,63 +16,75 @@ Seven recommenders compared on **the same time-split test** over public data fro
 what they came for. Your store already records all of this (what they viewed, searched for and bought), but almost
 always shows the same shop window to everyone.
 
-**What this project does.** It builds, on the spot, a list of 10 products for each person, with the reason for each
-one, combining what they **viewed**, **bought** and **searched for**.
+**What this project does.** It builds, on the spot, a list of products for each person, with the reason for each one,
+combining what they **viewed**, **bought** and **searched for**.
 
-### An example, step by step (illustrative)
+### Step 1. How it works: an example (illustrative)
 
-> The customer and the products in this example are made up, just to show the idea. The way of choosing and the kinds
-> of reasons are the same ones the model uses on the real data.
+> In one sentence: in the search, the store shows what she looked for; on the product page, it shows what goes with
+> it, what she usually buys and what is on sale. The customer and the products are made up; the kinds of reasons are
+> the same ones the model uses on the real data.
 
-1. **Two weeks ago** she bought a chocolate protein drink in your store. She was logged in, so the purchase is in her
-   history.
-2. **Today** she types "whey" in the search, clicks the 900 g vanilla whey and also opens a protein bar.
-3. **In about 25 milliseconds** the model puts the clues together (what she bought before, what she viewed now, what
-   she searched for and what other people on the same path bought), scores each product and keeps the top 10.
-4. **The list shows up** in the cart or on the product page, each item with its reason:
+1. **Two weeks ago** she bought a chocolate protein drink in your store (she was logged in).
+2. **Today** she types "whey" and the **search shows more whey**: 40 whey products, in several flavors and sizes.
+3. She **opens the 900 g vanilla whey**. The product page shows other things, each with its reason:
 
-| # | Suggestion | Reason she sees | Where the clue comes from |
-|---|---|---|---|
-| 1 | Whey 900 g vanilla | You clicked it in your search for "whey" | search |
-| 2 | Whey 900 g chocolate | Ranked #2 in your search for "whey" | search |
-| 3 | Chocolate protein drink, 6 pack | You bought it 2 weeks ago | earlier purchase |
-| 4 | Strawberry protein drink | People who bought the chocolate one also bought this | bought together (item to item) |
-| 5 | Peanut protein bar | You viewed it a moment ago | what she viewed |
-| 6 | Shaker 600 ml | Usually viewed right after whey | sequence (SASRec) |
+| Suggestion | Reason she sees | Where the clue comes from |
+|---|---|---|
+| Whey 900 g chocolate | Ranked #2 in your search for "whey" | search |
+| Chocolate protein drink, 6 pack | You bought it 2 weeks ago; 15% cheaper today | earlier purchase and sale |
+| Strawberry protein drink | People who bought the chocolate one also bought this | bought together (item to item) |
 
-5. **She buys the 900 g chocolate whey**, which she never opened. This is the new sale, the one the "new products
-   only" reading measures, and it is where search helped the most in the test (hit rate from 11.7% to 32.3%).
-6. **The following week** the chocolate drink goes on sale and she gets an alert by email or WhatsApp. (In the project
+4. **In about 25 milliseconds** the model puts the clues together, scores each product and keeps the top 10.
+5. **"Frequently bought together"**, below the buy button, like on Amazon: a bundle of 2 or 3 products that make a
+   set (whey, shaker and creatine; in a computer store, a mousepad with mouse and keyboard). It comes from the "people
+   who bought X also bought Y" pairs that the item to item approach already counts. **The bundle was not measured in
+   this test.** In the data used (orders from January to April 2016), only 18.8% of orders had 2 or more products
+   (1,702 of 9,064) and only 102 of 5,309 pairs repeated in more than one order (`make pares`). For bundles to work,
+   a store needs enough orders for pairs to repeat.
+6. **She buys the 900 g chocolate whey**, which she never opened. This is the new sale, the one the "only the new sale"
+   reading measures, and it is where search helped the most in the test (hit rate from 11.7% to 32.3%).
+7. **The following week** the chocolate drink goes on sale and she gets an alert by email or WhatsApp. (In the project
    this part runs on simulated prices, because the public data has no daily prices.)
 
 Why not just show the best sellers? Because they are the same for everyone: in the test, the best sellers list got
 only 0.6% of what people bought.
 
-### What your store gains (measured)
+### Step 2. What your store gains (measured)
+
+> In one sentence: tested on 3,985 real purchases, the list got at least 1 product right in 84 out of every 100, and
+> using search almost tripled the hit rate on new sales.
 
 | | Number | What it means |
 |---|---|---|
 | Hit on the list | **84%** | in 84 out of every 100 visits that ended in a purchase, the person bought at least 1 of the 10 suggested |
-| New sales | **+20.7 points** | on products they had not seen yet, using search raised the hit rate from 11.7% to 32.3% |
+| New sales | **+20.7 points** | on products they had not opened yet, using search raised the hit rate from 11.7% to 32.3% |
 | Speed | **25 ms** | to build one person's list on a regular computer, no graphics card |
-| Cost | **R$ 0** | no paid API and no graphics card; the whole test ran on a simple 2-core server |
+| Cost of the test | **R$ 0** | no paid API and no graphics card; the whole test ran on a simple 2-core server |
 
 **Where the numbers come from:** public data from a European online store, January to June 2016 (Diginetica, CIKM
 Cup 2016), tested on 3,985 visits with a purchase in May. The store replaced each product name with a number before
 releasing the data; that is why the demo shows "Product #25911" and not "Whey 900 g chocolate". It is a test on the
 past: in your store the numbers will differ.
 
-### What it takes to do this in your store
+### Step 3. What you need in your store for this
 
-- **The data you already have:** visits (which products each person opened, and when), searches (what they typed,
-  what the search showed and what they clicked) and purchases (ideally with the customer logged in). Optional: each
-  day's price, for the sale alert. Most online stores already record this, in the platform itself or in an analytics
-  tool such as Google Analytics. A few months of history is enough to start (this test used 4).
-- **Where the list shows up:** product page ("people who viewed this also bought"), cart ("before you pay, don't
-  forget"), email or WhatsApp ("what you buy is on sale") and home page ("picked for you").
+> In one sentence: the data the store already keeps, someone to connect the model to the site and an A/B test to
+> prove it sells more.
+
+- **The data you already have:** orders (what each customer bought and when; they live in the store platform),
+  visits (which products each person opened) and searches (what they typed and what they clicked next; the list the
+  search showed helps, but you can start without it). To link a visit and a purchase by the same person, the site has
+  to recognize the customer (login or the browser identifier). Optional: each day's price, for the sale alert. Visits
+  and searches usually live in an analytics tool such as Google Analytics; Google Analytics 4 exports per-person
+  events to BigQuery. A few months of history is enough to start (this test used 4).
+- **Where the list shows up:** product page ("people who viewed this also bought"), frequently bought together (a
+  bundle below the buy button), cart ("before you pay, don't forget"), home page ("picked for you"), email (only to
+  people who opted in) and WhatsApp (only with the customer's consent and through the official API, which charges per
+  message). Someone technical has to connect the model to the site: send the data and show the list that comes back.
 - **How to know it worked (A/B test):** a random half of customers sees the new list; the other half sees the store
-  as it is today. After 2 to 4 weeks you compare sales per visit, average order value and how many people click the
-  list. Keep the list only if it wins.
+  as it is today. After a few weeks (2 to 4 in a busy store; longer in a small one), compare sales per visit, average
+  order value and how many people click the list. Keep the list only if it wins.
 
 ### Quick glossary
 
@@ -83,9 +95,11 @@ past: in your store the numbers will differ.
   the most complete (the hybrid with search).
 - **Hybrid:** combines the suggestions of the simpler approaches, and a model (LightGBM) learns the best order. "With
   search" also uses the search clues.
-- **Everything bought:** getting any product bought in the visit right counts, including ones they had already opened.
-- **New products only:** only getting right what they bought without having seen it before counts. This is the new
-  sale, the hardest one.
+- **Everything they bought:** getting right any product they bought counts, even one they had already opened. E.g.:
+  opened the whey, bought the whey and it was on the list: it counts.
+- **Only the new sale** (in the tables, "new only"): only getting right what they bought without opening it first
+  counts, the sale the store would not make on its own. E.g.: never opened the shaker, bought it and it was on the
+  list: it counts.
 - **Recall@10 (hit rate):** of the products they bought, how many were among the 10 suggested.
 - **Hit 1+:** the list had at least 1 product the person bought in that visit.
 - **Points:** the difference between two percentages. From 70.3% to 77.3% is +7.0 points.
@@ -200,6 +214,7 @@ make instalar          # venv + PyTorch CPU + dependencies
 make baixar            # needs a Kaggle token (public copy of Diginetica)
 make preparar          # CSV -> Parquet (DuckDB)
 make avaliar           # trains, measures, writes reports/ and docs/index.html
+make pares             # counts pairs bought together (reports/pares.json), no training
 make testes            # pytest + ruff
 python3 tests/pagina_playwright.py   # checks the page at 1440 px and 390 px (needs Playwright)
 ```
@@ -217,6 +232,7 @@ src/proxima_compra/
   ranker.py      LightGBM LambdaRank hybrids, with and without search
   metricas.py    recall@10, NDCG@10, hit@10, coverage, bootstrap
   promocao.py    "what you buy is on sale" alert
+  pares.py       how many product pairs were bought together (basis for "frequently bought together")
   avaliar.py     runs everything and writes reports/resultados.json and .md
   demo.py        exports the sample and builds docs/index.html
 site/modelo.html page template (data is embedded; no server needed)

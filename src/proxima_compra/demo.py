@@ -117,8 +117,11 @@ def exportar(resultado: dict, destino: Path, n: int = 36, semente: int = 7) -> d
     return dados
 
 
-def montar_pagina(dados_json: Path, modelo_html: Path, saida_html: Path) -> int:
+def montar_pagina(dados_json: Path, modelo_html: Path, saida_html: Path, extras: dict | None = None) -> int:
+    """Embute os dados no modelo. `extras` (ex.: o resumo dos pares de compra) entra no mesmo JSON."""
     dados = Path(dados_json).read_text()
+    if extras:
+        dados = json.dumps({**json.loads(dados), **extras}, ensure_ascii=False, separators=(",", ":"))
     html = Path(modelo_html).read_text()
     if "__DADOS__" not in html:
         raise ValueError("o modelo da página precisa ter o marcador __DADOS__")

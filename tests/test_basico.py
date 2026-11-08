@@ -15,6 +15,7 @@ from proxima_compra.casos import Caso, Divisao, montar_casos
 from proxima_compra.dados import converter
 from proxima_compra.metricas import acerto_at_k, bootstrap_diferenca, cobertura, ndcg_at_k, recall_at_k
 from proxima_compra.modelos import Busca, Coocorrencia, Popularidade, Visto, completar, top_k
+from proxima_compra.pares import resumo_pares
 from proxima_compra.promocao import alertas_promocao, precos_simulados
 
 
@@ -141,3 +142,13 @@ def test_demo_json_se_existir():
                 assert len(lista) == 10 and len({x["item"] for x in lista}) == 10
                 assert all(str(x["item"]) in dados["produtos"] for x in lista)
                 assert all((x["item"] in v["comprou"]) == x["ok"] for x in lista)
+
+
+def test_pares_de_compra_contam_so_antes_do_corte(base):
+    r = resumo_pares(base, dt.date(2016, 5, 1))
+    assert r["pedidos"] == 4 and r["pedidos_2_ou_mais"] == 1 and r["maior_pedido"] == 2
+    assert r["pares_no_mesmo_pedido"] == {"pares": 1, "pares_2": 0, "pares_3": 0}
+    v = r["visto_e_comprado_na_visita"]
+    assert v["pares"] > 0 and v["pares_2"] >= 1  # 100 visto e 101 comprado aparece nas sessões 1 e 10
+    cedo = resumo_pares(base, dt.date(2016, 4, 1))
+    assert cedo["pedidos"] == 3 and cedo["pedidos_2_ou_mais"] == 0

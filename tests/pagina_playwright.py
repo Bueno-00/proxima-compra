@@ -65,8 +65,23 @@ def main() -> int:
             for esperado in ("84%", "+20,7", "25 ms", "R$ 0", "Produto #25911"):
                 if esperado not in ganho:
                     falhas.append(f"{nome}: falta {esperado!r} em 'o que a loja ganha'")
+            if pg.evaluate("document.querySelector('#glossario details').open"):
+                falhas.append(f"{nome}: glossário deveria começar fechado")
+            pg.click("#glossario summary")
             if pg.locator("#glossario dl:visible .gl").count() < 10:
-                falhas.append(f"{nome}: glossário com menos de 10 termos")
+                falhas.append(f"{nome}: glossário com menos de 10 termos depois de abrir")
+            if pg.locator(".roadmap .rm a").count() != 4:
+                falhas.append(f"{nome}: roteiro da página sem as 4 etapas")
+            if pg.locator(".tldr:visible").count() < 6:
+                falhas.append(f"{nome}: faltam as frases-resumo no topo das partes")
+            exemplo = pg.inner_text("#exemplo")
+            for esperado in ("Compre junto", "18,8%", "não foi medido"):
+                if esperado not in exemplo:
+                    falhas.append(f"{nome}: falta {esperado!r} no exemplo")
+            pg.click(".telas [data-tela='1']")
+            if not pg.locator("[data-tela-c='1']").is_visible() or pg.locator("[data-tela-c='2']").is_visible():
+                falhas.append(f"{nome}: troca de tela do celular não funcionou")
+            pg.click(".telas [data-tela='2']")
             pg.screenshot(path=str(CAPTURAS / f"{nome}-inicio.png"), full_page=False)
             pg.screenshot(path=str(CAPTURAS / f"{nome}-inteira.png"), full_page=True)
             for sel, arq in (("#exemplo", "exemplo"), ("#ganho", "ganho"), ("#implementar", "implementar"),
@@ -79,9 +94,13 @@ def main() -> int:
                 if pg.locator("ol.recs li").count() != 10:
                     falhas.append(f"{nome}: {modelo} sem 10 sugestões")
             pg.click("#prox")
+            if "vezes seguidas" not in pg.inner_text("#hist"):
+                falhas.append(f"{nome}: buscas repetidas da visita 2 não foram agrupadas")
             pg.click("#seg-leitura-2 [data-leitura='descoberta']")
-            if "novos" not in pg.inner_text("#recs").lower():
-                falhas.append(f"{nome}: leitura descoberta não mudou o texto")
+            if "aberto" not in pg.inner_text("#recs").lower() or "venda nova" not in pg.inner_text(".mode-hint").lower():
+                falhas.append(f"{nome}: leitura 'só a venda nova' não mudou o texto")
+            if pg.get_attribute("#seg-leitura-1 [data-leitura='descoberta']", "aria-pressed") != "true":
+                falhas.append(f"{nome}: os cartões dos dois modos não acompanharam a troca")
             pg.locator("#visita").screenshot(path=str(CAPTURAS / f"{nome}-visita-descoberta.png"))
             pg.click("#seg-leitura-2 [data-leitura='geral']")
             pg.click("[data-lang='en']")

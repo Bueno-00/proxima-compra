@@ -1,0 +1,16 @@
+{
+  "ate": "2016-05-01",
+  "pedidos": 9064,
+  "pedidos_2_ou_mais": 1702,
+  "maior_pedido": 22,
+  "pares_no_mesmo_pedido": {
+    "pares": 5309,
+    "pares_2": 102,
+    "pares_3": 41
+  },
+  "visto_e_comprado_na_visita": {
+    "pares": 41218,
+    "pares_2": 568,
+    "pares_3": 63
+  }
+}

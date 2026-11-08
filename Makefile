@@ -1,6 +1,6 @@
 PY := .venv/bin/python
 
-.PHONY: instalar baixar preparar avaliar pagina testes
+.PHONY: instalar baixar preparar avaliar pares pagina testes
 
 instalar:
 	python3 -m venv .venv
@@ -18,6 +18,9 @@ preparar:
 
 avaliar:
 	$(PY) -m proxima_compra.cli avaliar
+
+pares:
+	$(PY) -m proxima_compra.cli pares
 
 pagina:
 	$(PY) -m proxima_compra.cli pagina

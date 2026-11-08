@@ -16,64 +16,75 @@ recomendar comparados no **mesmo teste, com divisão por data**, numa base públ
 nada, ou leva só o que já veio buscar. Sua loja já registra tudo isso (o que ele viu, pesquisou e comprou), mas
 quase sempre mostra a mesma vitrine para todo mundo.
 
-**O que este projeto faz.** Monta, na hora, uma lista de 10 produtos para cada pessoa, com o motivo de cada um,
+**O que este projeto faz.** Monta, na hora, uma lista de produtos para cada pessoa, com o motivo de cada um,
 juntando o que ela **viu**, **comprou** e **pesquisou**.
 
-### Um exemplo, passo a passo (ilustrativo)
+### Etapa 1. Como funciona: um exemplo (ilustrativo)
 
-> A cliente e os produtos deste exemplo são inventados, só para mostrar a ideia. O jeito de escolher e os tipos de
-> motivo são os mesmos que o modelo usa nos dados reais.
+> Em uma frase: na busca, a loja mostra o que ela procurou; na página do produto, mostra o que combina, o que ela
+> costuma comprar e o que está em promoção. A cliente e os produtos são inventados; os tipos de motivo são os mesmos
+> que o modelo usa nos dados reais.
 
-1. **Há 2 semanas**, ela comprou bebida proteica sabor chocolate na sua loja. Estava logada, então a compra fica no
-   histórico dela.
-2. **Hoje** ela digita "whey" na busca, clica no Whey 900 g baunilha e abre também uma barra de proteína.
-3. **Em uns 25 milésimos de segundo**, o modelo junta as pistas (o que ela comprou antes, o que viu agora, o que
-   pesquisou e o que outras pessoas com o mesmo caminho compraram), dá uma nota para cada produto e fica com os 10
-   maiores.
-4. **A lista aparece** no carrinho ou na página do produto, cada item com o motivo:
+1. **Há 2 semanas**, ela comprou bebida proteica sabor chocolate na sua loja (estava logada).
+2. **Hoje** ela digita "whey" e a **busca mostra mais whey**: 40 produtos de whey, em vários sabores e tamanhos.
+3. Ela **abre o Whey 900 g baunilha**. Na página do produto aparecem outras coisas, cada uma com o motivo:
 
-| # | Sugestão | Motivo que aparece para ela | De onde vem a pista |
-|---|---|---|---|
-| 1 | Whey 900 g baunilha | Você clicou nele na busca por "whey" | busca |
-| 2 | Whey 900 g chocolate | Apareceu em 2º na sua busca por "whey" | busca |
-| 3 | Bebida proteica chocolate, 6 un. | Você comprou há 2 semanas | compra anterior |
-| 4 | Bebida proteica morango | Quem comprou a de chocolate também levou esta | quem comprou também levou (item a item) |
-| 5 | Barra de proteína amendoim | Você viu agora há pouco | o que ela viu |
-| 6 | Coqueteleira 600 ml | Costuma ser vista logo depois do whey | sequência (SASRec) |
+| Sugestão | Motivo que aparece para ela | De onde vem a pista |
+|---|---|---|
+| Whey 900 g chocolate | Apareceu em 2º na sua busca por "whey" | busca |
+| Bebida proteica chocolate, 6 un. | Você comprou há 2 semanas; 15% mais barata hoje | compra anterior e promoção |
+| Bebida proteica morango | Quem comprou a de chocolate também levou esta | quem comprou também levou (item a item) |
 
-5. **Ela leva o Whey 900 g chocolate**, que nem tinha aberto. Essa é a venda nova, a que a leitura "só produtos
-   novos" mede, e é onde a busca mais ajudou no teste (de 11,7% para 32,3% de acerto).
-6. **Na semana seguinte**, a bebida de chocolate entra em promoção e ela recebe o aviso por e-mail ou WhatsApp. (No
+4. **Em uns 25 milésimos de segundo** o modelo junta as pistas, dá uma nota para cada produto e fica com os 10 maiores.
+5. **"Compre junto"**, embaixo do botão de comprar, como na Amazon: um combo de 2 ou 3 produtos que formam um
+   conjunto (whey, coqueteleira e creatina; numa loja de informática, mousepad com mouse e teclado). Vem dos pares
+   "quem comprou X também levou Y", que o jeito item a item já conta. **O combo não foi medido neste teste.** Na base
+   usada (pedidos de janeiro a abril de 2016), só 18,8% dos pedidos tiveram 2 produtos ou mais (1.702 de 9.064) e só
+   102 dos 5.309 pares se repetiram em mais de um pedido (`make pares`). Para o combo funcionar, a loja precisa de
+   pedidos suficientes para os pares se repetirem.
+6. **Ela leva o Whey 900 g chocolate**, que nem tinha aberto. É a venda nova, a que a leitura "só a venda nova" mede,
+   e é onde a busca mais ajudou no teste (de 11,7% para 32,3% de acerto).
+7. **Na semana seguinte**, a bebida de chocolate entra em promoção e ela recebe o aviso por e-mail ou WhatsApp. (No
    projeto, esta parte roda com preços simulados, porque a base pública não tem preço por dia.)
 
 Por que não mostrar os mais vendidos? Porque são iguais para todo mundo: no teste, a lista dos mais vendidos acertou
 só 0,6% do que as pessoas compraram.
 
-### O que a sua loja ganha (medido)
+### Etapa 2. O que a sua loja ganha (medido)
+
+> Em uma frase: testado com 3.985 compras reais, a lista acertou pelo menos 1 produto em 84 de cada 100, e usar a
+> busca quase triplicou o acerto na venda nova.
 
 | | Número | O que quer dizer |
 |---|---|---|
 | Acerto na lista | **84%** | em 84 de cada 100 visitas que terminaram em compra, a pessoa levou pelo menos 1 dos 10 sugeridos |
-| Venda nova | **+20,7 pontos** | nos produtos que ela ainda não tinha visto, usar a busca subiu o acerto de 11,7% para 32,3% |
+| Venda nova | **+20,7 pontos** | nos produtos que ela ainda não tinha aberto, usar a busca subiu o acerto de 11,7% para 32,3% |
 | Velocidade | **25 ms** | para montar a lista de uma pessoa num computador comum, sem placa de vídeo |
-| Gasto | **R$ 0** | sem API paga e sem placa de vídeo; o teste inteiro rodou num servidor simples de 2 núcleos |
+| Gasto no teste | **R$ 0** | sem API paga e sem placa de vídeo; o teste inteiro rodou num servidor simples de 2 núcleos |
 
 **De onde vêm os números:** dados públicos de uma loja online europeia, de janeiro a junho de 2016 (Diginetica,
 CIKM Cup 2016), com teste em 3.985 visitas com compra de maio. A loja trocou o nome de cada produto por um número
 antes de liberar os dados; por isso a demonstração mostra "Produto #25911" e não "Whey 900 g chocolate". É um teste
 com o passado: na sua loja os números vão ser outros.
 
-### O que precisa para fazer isso na sua loja
+### Etapa 3. O que você precisa ter na sua loja para isso
 
-- **Os dados que você já tem:** visitas (quais produtos cada pessoa abriu, e quando), buscas (o que ela digitou, o
-  que a busca mostrou e onde clicou) e compras (de preferência com o cliente logado). Opcional: o preço de cada dia,
-  para o aviso de promoção. A maioria das lojas virtuais já registra isso, na própria plataforma ou numa ferramenta
-  de análise como o Google Analytics. Alguns meses de histórico bastam para começar (aqui foram 4).
-- **Onde a lista aparece:** página do produto ("quem viu este também levou"), carrinho ("antes de pagar, não
-  esqueça"), e-mail ou WhatsApp ("o que você compra entrou em promoção") e página inicial ("escolhidos para você").
+> Em uma frase: os dados que a loja já guarda, alguém que ligue o modelo ao site e um teste A/B para provar que
+> vende mais.
+
+- **Os dados que você já tem:** pedidos (o que cada cliente comprou e quando; ficam na plataforma da loja), visitas
+  (quais produtos cada pessoa abriu) e buscas (o que digitou e em que clicou depois; a lista que a busca mostrou ajuda,
+  mas dá para começar sem ela). Para juntar visita e compra da mesma pessoa, o site precisa reconhecer o cliente
+  (login ou o identificador do navegador). Opcional: o preço de cada dia, para o aviso de promoção. Visitas e buscas
+  costumam ficar numa ferramenta de análise, como o Google Analytics; o Google Analytics 4 exporta os eventos por
+  pessoa para o BigQuery. Alguns meses de histórico bastam para começar (aqui foram 4).
+- **Onde a lista aparece:** página do produto ("quem viu este também levou"), compre junto (combo embaixo do botão de
+  comprar), carrinho ("antes de pagar, não esqueça"), página inicial ("escolhidos para você"), e-mail (só para quem
+  autorizou) e WhatsApp (só com autorização do cliente e pela API oficial, que cobra por mensagem). Alguém da parte
+  técnica precisa ligar o modelo ao site: enviar os dados e mostrar a lista que volta.
 - **Como saber se deu certo (teste A/B):** metade dos clientes, sorteada, vê a lista nova; a outra metade vê a loja
-  como está hoje. Depois de 2 a 4 semanas, você compara vendas por visita, valor médio do pedido e quantas pessoas
-  clicam na lista. Só fica com a lista se ela ganhar.
+  como está hoje. Depois de algumas semanas (2 a 4 numa loja com muito movimento; mais numa loja pequena), compare
+  vendas por visita, valor médio do pedido e quantas pessoas clicam na lista. Só fica com a lista se ela ganhar.
 
 ### Glossário rápido
 
@@ -84,8 +95,10 @@ com o passado: na sua loja os números vão ser outros.
   mais completa (o híbrido com busca).
 - **Híbrido:** junta as sugestões dos jeitos mais simples e um modelo (LightGBM) aprende a melhor ordem. "Com busca"
   usa também as pistas da busca.
-- **Tudo que comprou:** vale acertar qualquer produto comprado na visita, inclusive os que ela já tinha aberto.
-- **Só produtos novos:** vale só acertar o que ela comprou sem ter visto antes. É a venda nova, a mais difícil.
+- **Tudo que ela levou:** vale acertar qualquer produto que ela comprou, até o que ela já tinha aberto. Ex.: abriu o
+  whey, comprou o whey e ele estava na lista: conta.
+- **Só a venda nova** (nas tabelas, "só novos"): vale só acertar o que ela comprou sem ter aberto antes, a venda que a
+  loja não faria sozinha. Ex.: nunca abriu a coqueteleira, comprou e ela estava na lista: conta.
 - **Recall@10 (acerto):** dos produtos que ela comprou, quantos estavam entre os 10 sugeridos.
 - **Acertou 1+:** a lista teve pelo menos 1 produto que a pessoa comprou naquela visita.
 - **Pontos:** a diferença entre duas porcentagens. De 70,3% para 77,3% são +7,0 pontos.
@@ -199,6 +212,7 @@ make instalar          # venv + PyTorch CPU + dependências
 make baixar            # precisa do token do Kaggle (cópia pública da Diginetica)
 make preparar          # CSV -> Parquet (DuckDB)
 make avaliar           # treina, mede, grava reports/ e docs/index.html
+make pares             # conta os pares comprados juntos (reports/pares.json), sem treinar nada
 make testes            # pytest + ruff
 python3 tests/pagina_playwright.py   # confere a página em 1440 px e 390 px (precisa do Playwright)
 ```
@@ -216,6 +230,7 @@ src/proxima_compra/
   ranker.py      híbridos com LightGBM LambdaRank, com e sem busca
   metricas.py    recall@10, NDCG@10, acerto@10, cobertura, bootstrap
   promocao.py    aviso "o que você compra está em promoção"
+  pares.py       quantos pares de produtos foram comprados juntos (base do "compre junto")
   avaliar.py     roda tudo e grava reports/resultados.json e .md
   demo.py        exporta a amostra e monta docs/index.html
 site/modelo.html modelo da página (os dados entram embutidos; não precisa de servidor)
