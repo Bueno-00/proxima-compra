@@ -32,7 +32,9 @@ def main() -> int:
                 falhas.append(f"{largura} px: rolagem lateral de {lateral} px")
             pg.close()
         for largura, altura, nome in ((1440, 900, "pc"), (390, 844, "celular")):
-            pg = nav.new_page(viewport={"width": largura, "height": altura}, device_scale_factor=1)
+            # prints sem a animação de entrada (movimento reduzido); a animação é conferida à parte
+            pg = nav.new_page(viewport={"width": largura, "height": altura}, device_scale_factor=1,
+                              reduced_motion="reduce")
             erros: list[str] = []
             pg.on("pageerror", lambda e, erros=erros: erros.append(str(e)))
             pg.on("console", lambda m, erros=erros: erros.append(m.text) if m.type == "error" else None)
@@ -107,12 +109,34 @@ def main() -> int:
             if erros:
                 falhas.append(f"{nome}: erros no console: {erros[:3]}")
             pg.close()
+        # animação de entrada ligada: ao rolar a página inteira, todo bloco tem que aparecer
+        for largura, altura in ((1440, 900), (390, 844)):
+            pg = nav.new_page(viewport={"width": largura, "height": altura})
+            erros_anim: list[str] = []
+            pg.on("console", lambda m, e=erros_anim: e.append(m.text) if m.type == "error" else None)
+            pg.goto(PAGINA.resolve().as_uri())
+            pg.wait_for_selector("#tabela tbody tr")
+            altura_total = pg.evaluate("document.documentElement.scrollHeight")
+            for y in range(0, altura_total, altura // 2):
+                pg.evaluate(f"window.scrollTo(0, {y})")
+                pg.wait_for_timeout(60)
+            pg.wait_for_timeout(900)
+            escondidos = pg.evaluate(
+                "[...document.querySelectorAll('.rv')].filter(e => e.offsetParent && "
+                "getComputedStyle(e).opacity < 0.99).length"
+            )
+            if escondidos:
+                falhas.append(f"{largura} px: {escondidos} bloco(s) não apareceram ao rolar")
+            if erros_anim:
+                falhas.append(f"{largura} px com animação: erros no console: {erros_anim[:3]}")
+            pg.close()
         # tema escuro
-        ctx = nav.new_context(viewport={"width": 1440, "height": 900}, color_scheme="dark")
+        ctx = nav.new_context(viewport={"width": 1440, "height": 900}, color_scheme="dark", reduced_motion="reduce")
         pg = ctx.new_page()
         pg.goto(PAGINA.resolve().as_uri())
         pg.wait_for_selector("#tabela tbody tr")
         pg.screenshot(path=str(CAPTURAS / "pc-escuro.png"), full_page=False)
+        pg.locator("#ganho").screenshot(path=str(CAPTURAS / "pc-escuro-ganho.png"))
         ctx.close()
         nav.close()
     if falhas:

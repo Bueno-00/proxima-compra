@@ -13,6 +13,8 @@
   --ok:#17714a; --ok-soft:#e3f3ea; --new:#7a4b00; --new-soft:#fbf0dc; --focus:#2f6aa3;
   --frame:#1b2028; --on-accent:#ffffff; --shadow:0 24px 60px -28px rgba(15,30,50,.35);
   --tc:#f1e6da; --tcf:#7a4520; --tv:#f7f0d8; --tvf:#7a6100; --ts:#f9e3e6; --tsf:#9b2c3e;
+  --glow1:rgba(47,106,163,.16); --glow2:rgba(23,113,74,.10); --dot:rgba(20,24,29,.10);
+  --hl-bg:#1f4e79; --hl-fg:#ffffff; --hl-muted:rgba(255,255,255,.74); --hl-line:rgba(255,255,255,.16);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -21,6 +23,8 @@
     --ok:#6fd3a0; --ok-soft:#15281e; --new:#f0c062; --new-soft:#2b2312; --focus:#8bbcec;
     --frame:#323a46; --on-accent:#0b1520; --shadow:0 24px 60px -28px rgba(0,0,0,.7);
     --tc:#2c221a; --tcf:#e0b98f; --tv:#2b2716; --tvf:#e5d27e; --ts:#2f1b20; --tsf:#f0a1ae;
+    --glow1:rgba(139,188,236,.13); --glow2:rgba(111,211,160,.07); --dot:rgba(238,241,244,.08);
+    --hl-bg:#173b5c; --hl-fg:#f2f6fa; --hl-muted:rgba(242,246,250,.72); --hl-line:rgba(255,255,255,.10);
   }
 }
 :root[data-theme="dark"]{
@@ -29,6 +33,8 @@
   --ok:#6fd3a0; --ok-soft:#15281e; --new:#f0c062; --new-soft:#2b2312; --focus:#8bbcec;
   --frame:#323a46; --on-accent:#0b1520; --shadow:0 24px 60px -28px rgba(0,0,0,.7);
   --tc:#2c221a; --tcf:#e0b98f; --tv:#2b2716; --tvf:#e5d27e; --ts:#2f1b20; --tsf:#f0a1ae;
+  --glow1:rgba(139,188,236,.13); --glow2:rgba(111,211,160,.07); --dot:rgba(238,241,244,.08);
+  --hl-bg:#173b5c; --hl-fg:#f2f6fa; --hl-muted:rgba(242,246,250,.72); --hl-line:rgba(255,255,255,.10);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -40,7 +46,7 @@ button{font:inherit;color:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
 @media (max-width:640px){.wrap{padding:0 16px}}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
-svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 /* idioma: blocos escritos nas duas línguas */
 :root[lang="en"] [data-only="pt"], :root:not([lang="en"]) [data-only="en"]{display:none!important}
 /* topo */
@@ -57,7 +63,9 @@ header.top .wrap{display:flex;align-items:center;justify-content:space-between;g
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--card)}
 .seg button{border:0;background:transparent;padding:6px 11px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2)}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
-.gh{font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:6px 11px}
+.gh{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;text-decoration:none;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:6px 11px}
+.gh svg{width:16px;height:16px}
+.gh:hover{border-color:var(--accent2)}
 @media (max-width:400px){.brand span{display:none}}
 /* títulos de seção */
 section{padding:26px 0 6px;scroll-margin-top:12px}
@@ -72,47 +80,103 @@ section.lg .sub{font-size:16px;color:var(--text2);margin-bottom:22px}
 .eyebrow.warn{color:var(--new);background:var(--new-soft)}
 .eyebrow.ok{color:var(--ok);background:var(--ok-soft)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px}
-/* abertura para a loja */
-.hero2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:44px;align-items:center;padding:48px 0 12px}
-.hero2 h1{font-size:37px;line-height:1.13;letter-spacing:-.025em;margin:0 0 16px;text-wrap:balance}
-.hero2 .lead{font-size:18px;color:var(--text2);margin:0 0 24px;max-width:640px}
+/* ===== abertura para a loja (21st: uiable/block-hero) ===== */
+.hero-shell{position:relative;overflow:hidden;isolation:isolate;border-bottom:1px solid var(--line2)}
+.hero-bg{position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(55% 75% at 12% -10%,var(--glow1),transparent 70%),radial-gradient(45% 60% at 95% 0%,var(--glow2),transparent 70%)}
+.hero-bg::after{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--dot) 1px,transparent 1.2px);background-size:22px 22px;
+  -webkit-mask-image:radial-gradient(ellipse 75% 70% at 50% 0%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 75% 70% at 50% 0%,#000 30%,transparent 75%)}
+.hero-spot{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .4s;
+  background:radial-gradient(420px circle at var(--hx,50%) var(--hy,30%),var(--glow1),transparent 70%)}
+.hero-shell:hover .hero-spot{opacity:1}
+.hero2{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);gap:48px;align-items:center;padding-top:56px;padding-bottom:56px}
+.badge-pill{display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;padding:6px 14px 6px 8px;border:1px solid var(--line);border-radius:999px;background:var(--card);box-shadow:0 1px 2px rgba(15,30,50,.06);font-size:13px;font-weight:700;color:var(--text2)}
+.badge-pill svg.i{width:26px;height:26px;padding:5px;border-radius:50%;background:var(--accent-soft);color:var(--accent)}
+.hero2 h1{font-size:39px;line-height:1.1;letter-spacing:-.03em;margin:0 0 18px;text-wrap:balance}
+.hero2 h1 .hl{color:var(--accent2)}
+.hero2 .lead{font-size:18px;line-height:1.6;color:var(--text2);margin:0 0 26px;max-width:640px}
 .ctas{display:flex;gap:10px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 16px;font-weight:700;font-size:14.5px;text-decoration:none;border:1px solid var(--accent)}
-.btn.pri{background:var(--accent);color:var(--on-accent)}
-.btn.sec{background:var(--card);color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:46px;border-radius:11px;padding:0 18px;font-weight:700;font-size:14.5px;text-decoration:none;border:1px solid var(--accent);transition:transform .15s,box-shadow .2s,background .2s}
+.btn.pri{background:var(--accent);color:var(--on-accent);box-shadow:0 8px 20px -10px var(--accent)}
+.btn.pri:hover{transform:translateY(-1px);box-shadow:0 12px 24px -10px var(--accent)}
+.btn.sec{background:var(--card);color:var(--accent);border-color:var(--line)}
+.btn.sec:hover{border-color:var(--accent2)}
 .btn svg.i{width:18px;height:18px}
-@media (max-width:900px){.hero2{grid-template-columns:1fr;gap:26px}}
-@media (max-width:640px){.hero2{padding:26px 0 4px}.hero2 h1{font-size:28px}.hero2 .lead{font-size:16px}}
-.journey{padding:20px 22px;box-shadow:var(--shadow)}
-.journey .jt{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.proof{margin-top:28px;display:flex;flex-direction:column;gap:8px}
+.proof-l{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.proof-pill{display:inline-flex;align-items:center;align-self:flex-start;flex-wrap:wrap;border:1px solid var(--line);border-radius:999px;background:var(--card);padding:4px 6px;box-shadow:0 1px 2px rgba(15,30,50,.06)}
+.proof-pill .pf{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;font-size:13px;color:var(--muted);white-space:nowrap}
+.proof-pill .pf b{color:var(--text);font-variant-numeric:tabular-nums}
+.proof-pill .pf svg.i{width:16px;height:16px;color:var(--accent2)}
+.proof-pill > i{width:1px;height:16px;background:var(--line)}
+@media (min-width:901px) and (max-width:1100px), (max-width:640px){
+  .proof-pill{display:grid;grid-template-columns:1fr 1fr;border-radius:14px;align-self:stretch;padding:6px}
+  .proof-pill > i{display:none}
+  .proof-pill .pf{padding:7px 8px;white-space:normal}
+}
+.journey{padding:22px 24px}
+.journey .jt{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;padding-bottom:12px;border-bottom:1px solid var(--line2)}
+.dots{display:inline-flex;gap:5px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
 .jstep{display:grid;grid-template-columns:42px minmax(0,1fr);gap:14px;position:relative;padding:10px 0}
 .jstep .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--bar-soft);color:var(--text2);position:relative;z-index:1}
-.jstep:not(:last-child)::after{content:"";position:absolute;left:20px;top:54px;bottom:-8px;border-left:2px dashed var(--line)}
+.jstep:not(:last-child)::after{content:"";position:absolute;left:20px;top:54px;bottom:-8px;border-left:1.5px dashed var(--line)}
 .jstep b{display:block;font-size:15px}
 .jstep p{margin:2px 0 0;color:var(--text2);font-size:14px}
 .jstep.lost .ic{background:var(--new-soft);color:var(--new)}
-.jstep.win{margin-top:6px}
+.jstep.win{margin-top:8px;padding:12px;border-radius:12px;background:var(--accent-soft)}
+.jstep.win::after{display:none}
 .jstep.win .ic{background:var(--accent);color:var(--on-accent)}
 .jstep.win b{color:var(--accent)}
-/* exemplo */
+@media (max-width:900px){.hero2{grid-template-columns:1fr;gap:28px;padding-top:36px;padding-bottom:40px}}
+@media (max-width:640px){.hero2 h1{font-size:29px}.hero2 .lead{font-size:16px}.btn{height:44px}}
+/* cartão com borda que acompanha o mouse (21st: uiable/block-feature-32, SpotlightCard) */
+.spot{position:relative;border-radius:16px;background:var(--card);border:1px solid var(--line);transition:box-shadow .3s,transform .3s}
+.spot::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),var(--sc,var(--accent2)),transparent 70%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.spot::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--sc,var(--accent2)) 9%,transparent),transparent 80%)}
+.spot:hover::before,.spot:hover::after{opacity:1}
+.spot:hover{box-shadow:var(--shadow)}
+.spot > *{position:relative;z-index:1}
+.journey.spot{box-shadow:var(--shadow)}
+/* entrada suave ao rolar */
+.anim .rv{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.anim .rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.anim .rv{opacity:1;transform:none;transition:none}}
+/* cabeçalho de seção */
+.sec-h{margin-bottom:26px}
+.eyebrow svg.i{width:14px;height:14px}
+/* ===== exemplo (21st: ln-dev7/how-it-works-02) ===== */
 .ex{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:start}
 @media (max-width:980px){.ex{grid-template-columns:1fr;gap:28px}}
-.steps{list-style:none;margin:0;padding:0;counter-reset:s}
-.steps li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:16px;padding:0 0 22px;position:relative}
-.steps li::before{counter-increment:s;content:counter(s);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--card);border:2px solid var(--accent2);color:var(--accent);position:relative;z-index:1}
-.steps li:not(:last-child)::after{content:"";position:absolute;left:18px;top:40px;bottom:0;width:2px;background:var(--line)}
-.steps li.star::before{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
-.steps .when{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.steps b{display:block;font-size:17px;margin:1px 0 4px;letter-spacing:-.01em}
-.steps p{margin:0;color:var(--text2)}
-.steps p b{display:inline;font-size:inherit;margin:0;letter-spacing:0;color:var(--text)}
+.tl{list-style:none;margin:0;padding:0 0 0 54px;position:relative;display:flex;flex-direction:column;gap:14px}
+.tl::before{content:"";position:absolute;left:18px;top:14px;bottom:14px;border-left:1.5px dashed var(--line)}
+.tl li{position:relative}
+.tl .node{position:absolute;left:-54px;top:16px;width:37px;height:37px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);
+  font:700 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text);box-shadow:0 1px 3px rgba(15,30,50,.08)}
+.tl-card{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:border-color .2s,box-shadow .2s}
+.tl-card:hover{border-color:var(--accent2);box-shadow:0 10px 30px -18px rgba(15,30,50,.35)}
+.tl-ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:none}
+.tl-ic svg.i{width:20px;height:20px}
+.tl .when{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.tl h3{font-size:16.5px;letter-spacing:-.01em;margin:2px 0 4px;line-height:1.3}
+.tl p{margin:0;color:var(--text2);font-size:14.5px}
+.tl p b{color:var(--text)}
+.tl li.star .tl-card{border-color:var(--ok);background:linear-gradient(180deg,var(--ok-soft),var(--card) 85%)}
+.tl li.star .node{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
+.tl li.star .tl-ic{background:var(--ok);color:var(--on-accent)}
+@media (max-width:640px){.tl{padding-left:46px}.tl::before{left:15px}.tl .node{left:-46px;width:31px;height:31px;font-size:11px}.tl-card{padding:14px;gap:12px}.tl-ic{width:34px;height:34px}}
 .q{font-weight:700;color:var(--text)}
-.why-not{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-top:4px}
-.why-not .ic{color:var(--new)}
+.why-not{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin:16px 0 0 54px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.why-not .wn-ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--new-soft);color:var(--new);flex:none}
+.why-not .wn-ic svg.i{width:17px;height:17px}
 .why-not p{margin:0;color:var(--text2);font-size:14.5px}
+@media (max-width:640px){.why-not{margin-left:0}}
 .phone-col{position:sticky;top:20px}
 @media (max-width:980px){.phone-col{position:static}}
-.phone{max-width:360px;margin:0 auto;border:9px solid var(--frame);border-radius:40px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+.phone{max-width:360px;margin:0 auto;border:9px solid var(--frame);border-radius:42px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
 .phone .notch{width:96px;height:20px;background:var(--frame);border-radius:0 0 13px 13px;margin:0 auto}
 .phone .status{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;padding:0 20px;margin-top:-16px;color:var(--text2)}
 .shop-h{padding:14px 16px 12px;border-bottom:1px solid var(--line2)}
@@ -123,69 +187,114 @@ section.lg .sub{font-size:16px;color:var(--text2);margin-bottom:22px}
 .plist-h span{font-size:11.5px;font-weight:700;color:var(--muted)}
 .prow{display:grid;grid-template-columns:44px minmax(0,1fr);gap:11px;padding:9px 16px;border-top:1px solid var(--line2);align-items:center}
 .thumb{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:var(--bar-soft);color:var(--text2)}
+.thumb svg.i{width:22px;height:22px}
 .thumb.c{background:var(--tc);color:var(--tcf)} .thumb.v{background:var(--tv);color:var(--tvf)} .thumb.s{background:var(--ts);color:var(--tsf)}
 .prow .nm{font-weight:700;font-size:13.5px;line-height:1.25}
 .prow .rs{font-size:12.5px;color:var(--text2);line-height:1.3;margin-top:2px}
-.sig{display:inline-block;font-size:10.5px;font-weight:800;border-radius:5px;padding:1px 6px;margin-top:5px;background:var(--bar-soft);color:var(--text2);letter-spacing:.02em}
+.sig{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;border-radius:5px;padding:1px 6px;margin-top:5px;background:var(--bar-soft);color:var(--text2);letter-spacing:.02em}
+.sig svg.i{width:11px;height:11px;stroke-width:2.4}
 .sig.s{background:var(--accent-soft);color:var(--accent)}
 .prow.bought{background:var(--ok-soft)}
 .prow.bought .nm::after{content:attr(data-flag);font-size:10.5px;font-weight:800;color:var(--ok);border:1px solid var(--ok);border-radius:5px;padding:0 5px;margin-left:6px;vertical-align:1px}
 .phone .more{padding:10px 16px 16px;font-size:12.5px;color:var(--muted);text-align:center;border-top:1px solid var(--line2)}
 .phone-cap{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted);max-width:360px;margin:14px auto 0}
 .phone-cap i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
-/* o que a loja ganha */
-.gains{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-@media (max-width:1020px){.gains{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.gains{grid-template-columns:1fr}}
-.gain{padding:20px 20px 18px}
-.gain .v{font-size:38px;font-weight:800;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.05}
-.gain .t{font-weight:700;margin:8px 0 6px;font-size:15px;line-height:1.35}
-.gain p{margin:0;color:var(--text2);font-size:14px}
-.gain .v small{font-size:19px;font-weight:700;letter-spacing:0;margin-left:5px}
-@media (max-width:640px){.gain .v{font-size:32px}}
+/* ===== o que a loja ganha (21st: uilayout.contact/stats-bento) ===== */
+.bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.b-main{grid-column:span 6;grid-row:span 2;position:relative;overflow:hidden;border-radius:22px;padding:30px 32px;min-height:320px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;background:var(--hl-bg);color:var(--hl-fg)}
+.b-lines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(45deg,var(--hl-line) 0 1px,transparent 1px 11px);
+  -webkit-mask-image:radial-gradient(ellipse 85% 60% at 100% 0%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 85% 60% at 100% 0%,#000 55%,transparent 100%)}
+.b-main > :not(.b-lines){position:relative}
+.b-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.12);color:var(--hl-muted);font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.b-tag svg.i{width:14px;height:14px}
+.b-big{font-size:104px;font-weight:800;letter-spacing:-.055em;line-height:1;margin-top:22px;font-variant-numeric:tabular-nums}
+.b-sub{font-size:17px;font-weight:700;margin-top:8px}
+.b-main p{margin:0;color:var(--hl-muted);font-size:15px;max-width:420px}
+.waffle{display:grid;grid-template-columns:repeat(20,10px);gap:6px}
+.waffle i{width:10px;height:10px;border-radius:3px;background:var(--hl-line)}
+.waffle i.on{background:var(--hl-fg);opacity:.92}
+@media (max-width:560px){.waffle{grid-template-columns:repeat(20,minmax(0,1fr));gap:4px}.waffle i{width:auto;aspect-ratio:1}}
+.bcard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 24px}
+.b-a{grid-column:span 6;display:flex;justify-content:space-between;align-items:flex-end;gap:18px}
+.b-a-txt{min-width:0}
+.b-tag2{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ok)}
+.b-tag2 svg.i{width:15px;height:15px}
+.b-val{font-size:36px;font-weight:800;letter-spacing:-.035em;line-height:1.1;color:var(--text);margin:6px 0 6px;font-variant-numeric:tabular-nums}
+.b-val small{font-size:17px;font-weight:700;letter-spacing:0;margin-left:6px;color:var(--text2)}
+.bcard p{margin:0;color:var(--text2);font-size:14px}
+.mini{display:flex;gap:12px;align-items:flex-end;flex:none}
+.mb{display:flex;flex-direction:column;align-items:center;gap:6px;width:62px}
+.mb b{font-size:13px;font-variant-numeric:tabular-nums;color:var(--text2)}
+.mb-trk{height:96px;width:30px;border-radius:8px;background:var(--bar-soft);display:flex;align-items:flex-end;overflow:hidden}
+.mb-bar{width:100%;border-radius:8px;background:var(--bar);transition:height .8s cubic-bezier(.2,.8,.2,1)}
+.mb.on .mb-bar{background:var(--ok)}
+.mb.on b{color:var(--ok)}
+.mb span{font-size:11.5px;color:var(--muted);text-align:center;line-height:1.2}
+.b-b,.b-c{grid-column:span 3;display:flex;flex-direction:column;gap:10px}
+.b-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.b-c .b-ic{background:var(--ok-soft);color:var(--ok)}
+.b-b .b-val,.b-c .b-val{font-size:32px;margin:0 0 4px}
+@media (max-width:1020px){.b-main{grid-column:span 12;grid-row:auto;min-height:0}.b-a{grid-column:span 12}.b-b,.b-c{grid-column:span 6}.b-big{font-size:84px}}
+@media (max-width:560px){.b-b,.b-c{grid-column:span 12}.b-a{flex-direction:column;align-items:flex-start}.b-big{font-size:68px}.b-main{padding:24px}}
 .duo{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:14px;margin-top:14px}
 @media (max-width:900px){.duo{grid-template-columns:1fr}}
-.vs{padding:20px}
-.vs h3,.srcbox h3{font-size:16px;margin:0 0 4px}
+.vs{padding:22px 24px;border-radius:22px}
+.vs h3,.srcbox h3{display:flex;align-items:center;gap:8px;font-size:16px;margin:0 0 4px}
+.vs h3 svg.i,.srcbox h3 svg.i{width:18px;height:18px;color:var(--accent2);flex:none}
 .vs .grp{margin-top:14px}
 .vs .gt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px}
 .vrow{display:grid;grid-template-columns:minmax(0,270px) minmax(0,1fr) 58px;gap:12px;align-items:center;padding:4px 0;font-size:14px}
 .vrow .nm{color:var(--text2)}
 .vrow .trk{height:12px;border-radius:6px;background:var(--bar-soft);overflow:hidden}
-.vrow .fl{height:100%;border-radius:6px;background:var(--bar);min-width:3px}
+.vrow .fl{height:100%;border-radius:6px;background:var(--bar);min-width:3px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
 .vrow.b .fl{background:var(--accent2)}
 .vrow.b .nm{color:var(--text);font-weight:700}
 .vrow .vv{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
 @media (max-width:560px){.vrow{grid-template-columns:minmax(0,1fr) 52px}.vrow .nm{grid-column:1 / -1}.vrow .trk{grid-column:1}}
-.srcbox{padding:20px;border-left:3px solid var(--new);border-radius:0 14px 14px 0}
-.srcbox p{margin:6px 0 0;color:var(--text2);font-size:14px}
-/* como fazer na loja */
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-@media (max-width:900px){.grid3{grid-template-columns:1fr}}
-.how{padding:20px}
-.how .hi{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);margin-bottom:12px}
-.how h3{font-size:16px;margin:0 0 8px}
-.how ul{margin:0;padding-left:18px;color:var(--text2);font-size:14px}
-.how li{margin:5px 0}
-.how p{color:var(--text2);font-size:14px;margin:8px 0 0}
-.how .foot{color:var(--muted);font-size:13px;border-top:1px dashed var(--line);padding-top:10px;margin-top:12px}
-.stepper{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:14px;padding:22px 16px 18px}
+.srcbox{padding:22px 24px;border-radius:22px;background:linear-gradient(180deg,var(--new-soft),var(--card) 60%)}
+.srcbox h3 svg.i{color:var(--new)}
+.srcbox p{margin:8px 0 0;color:var(--text2);font-size:14px}
+/* ===== como fazer na loja (21st: uiable/block-feature-32) ===== */
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.feats{grid-template-columns:1fr}}
+.feat{padding:24px}
+.ftile{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;margin-bottom:16px;border:1px solid color-mix(in srgb,var(--sc) 25%,transparent);background:color-mix(in srgb,var(--sc) 12%,var(--card));color:var(--sc);transition:background .3s,color .3s}
+.ftile svg.i{width:22px;height:22px}
+.feat:hover .ftile{background:var(--sc);color:var(--on-accent)}
+.feat h3{font-size:17px;letter-spacing:-.01em;margin:0 0 10px}
+.ilist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.ilist li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;align-items:start;font-size:14px;color:var(--text2)}
+.ilist li svg{width:18px;height:18px;margin-top:2px;color:var(--sc)}
+.ilist li b{color:var(--text)}
+.lead2{color:var(--text2);font-size:14px;margin:0 0 10px}
+.feat .foot{color:var(--muted);font-size:13px;border-top:1px dashed var(--line);padding-top:12px;margin:14px 0 0}
+svg.logo{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+svg.li-logo{width:18px;height:18px;margin:2px 0 0}
+.nowrap{white-space:nowrap}
+.stepper{list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:16px 0 0;padding:24px 16px 20px;background:var(--card);border:1px solid var(--line);border-radius:16px}
 .stepper .st{position:relative;text-align:center;padding:0 8px}
-.stepper .n{width:36px;height:36px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;font-weight:800;background:var(--accent-soft);color:var(--accent);position:relative;z-index:1}
-.stepper .st:not(:last-child)::after{content:"";position:absolute;top:18px;left:calc(50% + 22px);right:calc(-50% + 22px);height:2px;background:var(--line)}
+.stepper .n{width:42px;height:42px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);position:relative;z-index:1;border:4px solid var(--card)}
+.stepper .n svg.i{width:18px;height:18px}
+.stepper .st:not(:last-child)::after{content:"";position:absolute;top:20px;left:calc(50% + 24px);right:calc(-50% + 24px);border-top:1.5px dashed var(--line)}
 .stepper b{display:block;font-size:14px;line-height:1.3}
-.stepper span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+.stepper .sn{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--text);color:var(--card);font-size:11px;margin-right:6px;vertical-align:1px}
+.stepper .st > div > span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
 @media (max-width:820px){
   .stepper{grid-template-columns:1fr;gap:14px;padding:16px}
-  .stepper .st{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;text-align:left;padding:0}
+  .stepper .st{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;text-align:left;padding:0;align-items:center}
   .stepper .n{margin:0}
   .stepper .st:not(:last-child)::after{display:none}
 }
+/* como medimos */
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.grid3{grid-template-columns:1fr}}
 /* faixa da parte técnica */
 .band{margin-top:64px;padding:26px 28px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;background:var(--accent-soft);border:1px solid var(--line);border-radius:16px}
 .band .bi{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--card);color:var(--accent)}
 .band .bi svg.i{width:26px;height:26px}
 .band h2{font-size:24px;margin:0 0 4px}
+h2.ih{display:flex;align-items:center;gap:10px}
+h2.ih svg.i{width:22px;height:22px;color:var(--accent2)}
 .band p{margin:0;color:var(--text2);max-width:880px}
 @media (max-width:640px){.band{grid-template-columns:1fr;padding:20px;margin-top:44px}}
 /* glossário */
@@ -290,22 +399,49 @@ footer p{margin:4px 0}
 </style>
 </head>
 <body>
+<!-- Ícones: Lucide (licença ISC, lucide.dev). Logos de marca: svgl.app via 21st.dev. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
-  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></symbol>
-  <symbol id="i-exit" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
-  <symbol id="i-list" viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></symbol>
-  <symbol id="i-tub" viewBox="0 0 24 24"><path d="M6 9h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M5 5.5h14V9H5z"/><path d="M9.5 14h5"/></symbol>
-  <symbol id="i-bottle" viewBox="0 0 24 24"><path d="M10 2.5h4V6l2 3v11a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 8 20V9l2-3z"/><path d="M8 13h8"/></symbol>
-  <symbol id="i-bar" viewBox="0 0 24 24"><rect x="2.5" y="8.5" width="19" height="7" rx="2"/><path d="M8 8.5v7M14 8.5v7"/></symbol>
-  <symbol id="i-shaker" viewBox="0 0 24 24"><path d="M6.5 8h11l-1.6 12.2a1.5 1.5 0 0 1-1.5 1.3H9.6a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M8 3.5h8V8H8z"/></symbol>
-  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
-  <symbol id="i-layout" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M10 9v11"/></symbol>
-  <symbol id="i-ab" viewBox="0 0 24 24"><path d="M12 3v18"/><rect x="3" y="6" width="6" height="12" rx="1.5"/><rect x="15" y="6" width="6" height="12" rx="1.5"/></symbol>
-  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/></symbol>
-  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
-  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4.5M12 17.5v.5"/></symbol>
-  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+  <symbol id="i-log-out" viewBox="0 0 24 24"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></symbol>
+  <symbol id="i-list-checks" viewBox="0 0 24 24"><path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></symbol>
+  <symbol id="i-chart-line" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
+  <symbol id="i-shopping-bag" viewBox="0 0 24 24"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></symbol>
+  <symbol id="i-smartphone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-bell-ring" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M22 8c0-2.3-.8-4.3-2-6"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/><path d="M4 2C2.8 3.7 2 5.7 2 8"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/></symbol>
+  <symbol id="i-milk" viewBox="0 0 24 24"><path d="M8 2h8"/><path d="M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2"/><path d="M7 15a6.472 6.472 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/></symbol>
+  <symbol id="i-candy" viewBox="0 0 24 24"><path d="M10 7v10.9"/><path d="M14 6.1V17"/><path d="M16 7V3a1 1 0 0 1 1.707-.707 2.5 2.5 0 0 0 2.152.717 1 1 0 0 1 1.131 1.131 2.5 2.5 0 0 0 .717 2.152A1 1 0 0 1 21 8h-4"/><path d="M16.536 7.465a5 5 0 0 0-7.072 0l-2 2a5 5 0 0 0 0 7.07 5 5 0 0 0 7.072 0l2-2a5 5 0 0 0 0-7.07"/><path d="M8 17v4a1 1 0 0 1-1.707.707 2.5 2.5 0 0 0-2.152-.717 1 1 0 0 1-1.131-1.131 2.5 2.5 0 0 0-.717-2.152A1 1 0 0 1 3 16h4"/></symbol>
+  <symbol id="i-cup-soda" viewBox="0 0 24 24"><path d="m6 8 1.75 12.28a2 2 0 0 0 2 1.72h4.54a2 2 0 0 0 2-1.72L18 8"/><path d="M5 8h14"/><path d="M7 15a6.47 6.47 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/><path d="m12 8 1-6h2"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-trending-up" viewBox="0 0 24 24"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"/></symbol>
+  <symbol id="i-piggy-bank" viewBox="0 0 24 24"><path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M16 10h.01"/><path d="M2 8v1a2 2 0 0 0 2 2h1"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></symbol>
+  <symbol id="i-split" viewBox="0 0 24 24"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></symbol>
+  <symbol id="i-shopping-cart" viewBox="0 0 24 24"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
+  <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+  <symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-flask-conical" viewBox="0 0 24 24"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/></symbol>
+  <symbol id="i-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-combine" viewBox="0 0 24 24"><path d="M14 3a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1"/><path d="M19 3a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1"/><path d="m7 15 3 3"/><path d="m7 21 3-3H5a2 2 0 0 1-2-2v-2"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="3" width="7" height="7" rx="1"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></symbol>
+  <symbol id="i-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/></symbol>
+  <symbol id="i-layout-panel-left" viewBox="0 0 24 24"><rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="l-github" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M512 0C229.12 0 0 229.12 0 512c0 226.56 146.56 417.92 350.08 485.76 25.6 4.48 35.2-10.88 35.2-24.32 0-12.16-.64-52.48-.64-95.36-128.64 23.68-161.92-31.36-172.16-60.16-5.76-14.72-30.72-60.16-52.48-72.32-17.92-9.6-43.52-33.28-.64-33.92 40.32-.64 69.12 37.12 78.72 52.48 46.08 77.44 119.68 55.68 149.12 42.24 4.48-33.28 17.92-55.68 32.64-68.48-113.92-12.8-232.96-56.96-232.96-252.8 0-55.68 19.84-101.76 52.48-137.6-5.12-12.8-23.04-65.28 5.12-135.68 0 0 42.88-13.44 140.8 52.48 40.96-11.52 84.48-17.28 128-17.28s87.04 5.76 128 17.28c97.92-66.56 140.8-52.48 140.8-52.48 28.16 70.4 10.24 122.88 5.12 135.68 32.64 35.84 52.48 81.28 52.48 137.6 0 196.48-119.68 240-233.6 252.8 18.56 16 34.56 46.72 34.56 94.72 0 68.48-.64 123.52-.64 140.8 0 13.44 9.6 29.44 35.2 24.32C877.44 929.92 1024 737.92 1024 512 1024 229.12 794.88 0 512 0"/></symbol>
+  <symbol id="l-whatsapp" viewBox="0 0 360 362"><path fill="#25D366" fill-rule="evenodd" clip-rule="evenodd" d="M307.546 52.566C273.709 18.684 228.706.017 180.756 0 81.951 0 1.538 80.404 1.504 179.235c-.017 31.594 8.242 62.432 23.928 89.609L0 361.736l95.024-24.925c26.179 14.285 55.659 21.805 85.655 21.814h.077c98.788 0 179.21-80.413 179.244-179.244.017-47.898-18.608-92.926-52.454-126.807v-.008Zm-126.79 275.788h-.06c-26.73-.008-52.952-7.194-75.831-20.765l-5.44-3.231-56.391 14.791 15.05-54.981-3.542-5.638c-14.912-23.721-22.793-51.139-22.776-79.286.035-82.14 66.867-148.973 149.051-148.973 39.793.017 77.198 15.53 105.328 43.695 28.131 28.157 43.61 65.596 43.593 105.398-.035 82.149-66.867 148.982-148.982 148.982v.008Zm81.719-111.577c-4.478-2.243-26.497-13.073-30.606-14.568-4.108-1.496-7.09-2.243-10.073 2.243-2.982 4.487-11.568 14.577-14.181 17.559-2.613 2.991-5.226 3.361-9.704 1.117-4.477-2.243-18.908-6.97-36.02-22.226-13.313-11.878-22.304-26.54-24.916-31.027-2.613-4.486-.275-6.91 1.959-9.136 2.011-2.011 4.478-5.234 6.721-7.847 2.244-2.613 2.983-4.486 4.478-7.469 1.496-2.991.748-5.603-.369-7.847-1.118-2.243-10.073-24.289-13.812-33.253-3.636-8.732-7.331-7.546-10.073-7.692-2.613-.13-5.595-.155-8.586-.155-2.991 0-7.839 1.118-11.947 5.604-4.108 4.486-15.677 15.324-15.677 37.361s16.047 43.344 18.29 46.335c2.243 2.991 31.585 48.225 76.51 67.632 10.684 4.615 19.029 7.374 25.535 9.437 10.727 3.412 20.49 2.931 28.208 1.779 8.604-1.289 26.498-10.838 30.228-21.298 3.73-10.46 3.73-19.433 2.613-21.298-1.117-1.865-4.108-2.991-8.586-5.234l.008-.017Z"/></symbol>
+  <symbol id="l-ga" viewBox="0 0 2195.9 2430.9"><path fill="#F9AB00" d="M2195.9,2126.7c0.9,166.9-133.7,302.8-300.5,303.7c-12.4,0.1-24.9-0.6-37.2-2.1 c-154.8-22.9-268.2-157.6-264.4-314V316.1c-3.7-156.6,110-291.3,264.9-314c165.7-19.4,315.8,99.2,335.2,264.9 c1.4,12.2,2.1,24.4,2,36.7L2195.9,2126.7z"/><path fill="#E37400" d="M301.1,1828.7c166.3,0,301.1,134.8,301.1,301.1c0,166.3-134.8,301.1-301.1,301.1 C134.8,2430.9,0,2296.1,0,2129.8C0,1963.5,134.8,1828.7,301.1,1828.7z M1093.3,916.2c-167.1,9.2-296.7,149.3-292.8,316.6v808.7 c0,219.5,96.6,352.7,238.1,381.1c163.3,33.1,322.4-72.4,355.5-235.7c4.1-20,6.1-40.3,6-60.7v-907.4 c0.3-166.9-134.7-302.4-301.6-302.7C1096.8,916.1,1095,916.1,1093.3,916.2z"/></symbol>
 </svg>
 
 <header class="top">
@@ -322,86 +458,102 @@ footer p{margin:4px 0}
         <button type="button" data-lang="pt" aria-pressed="true">PT</button>
         <button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <a class="gh" href="https://github.com/Bueno-00/proxima-compra" target="_blank" rel="noopener">GitHub</a>
+      <a class="gh" href="https://github.com/Bueno-00/proxima-compra" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#l-github"/></svg>GitHub</a>
     </div>
   </div>
 </header>
 
-<main class="wrap">
-  <!-- 1. Para a loja -->
-  <div class="hero2" id="loja">
-    <div>
-      <div data-only="pt">
-        <p class="eyebrow">Para quem tem loja ou mercado online</p>
-        <h1>Mostre a cada cliente os 10 produtos que ele tem mais chance de comprar, e diga por quê</h1>
-        <p class="lead">O cliente entra no seu site, olha, pesquisa e muitas vezes vai embora sem levar nada, ou leva só o que já veio buscar. Este projeto usa o que a sua loja já registra (o que a pessoa <b>viu</b>, <b>comprou</b> e <b>pesquisou</b>) para montar, na hora, uma lista de 10 sugestões para cada pessoa, com o motivo de cada uma.</p>
+<main>
+  <!-- 1. Para a loja (21st: uiable/block-hero, pílula de números e brilho que segue o mouse) -->
+  <div class="hero-shell" id="loja">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-spot" aria-hidden="true"></div>
+    <div class="wrap hero2">
+      <div class="hero-copy">
+        <div data-only="pt">
+          <p class="badge-pill rv"><svg class="i"><use href="#i-store"/></svg>Para quem tem loja ou mercado online</p>
+          <h1 class="rv">Mostre a cada cliente os 10 produtos que ele tem mais chance de comprar, e diga <span class="hl">por quê</span></h1>
+          <p class="lead rv">O cliente entra no seu site, olha, pesquisa e muitas vezes vai embora sem levar nada, ou leva só o que já veio buscar. Este projeto usa o que a sua loja já registra (o que a pessoa <b>viu</b>, <b>comprou</b> e <b>pesquisou</b>) para montar, na hora, uma lista de 10 sugestões para cada pessoa, com o motivo de cada uma.</p>
+        </div>
+        <div data-only="en">
+          <p class="badge-pill rv"><svg class="i"><use href="#i-store"/></svg>For online stores and grocery shops</p>
+          <h1 class="rv">Show each customer the 10 products they are most likely to buy, and say <span class="hl">why</span></h1>
+          <p class="lead rv">Customers come to your site, browse, search and often leave with nothing, or only with what they came for. This project uses what your store already records (what the person <b>viewed</b>, <b>bought</b> and <b>searched for</b>) to build, on the spot, a list of 10 suggestions for each person, with the reason for each one.</p>
+        </div>
+        <div class="ctas rv">
+          <a class="btn pri" href="#exemplo"><span data-t="cta1">Ver um exemplo</span><svg class="i"><use href="#i-arrow-down"/></svg></a>
+          <a class="btn sec" href="#ganho"><svg class="i"><use href="#i-chart-line"/></svg><span data-t="cta2">Ver os números medidos</span></a>
+        </div>
+        <div class="proof rv">
+          <span class="proof-l" data-t="proof_l">Medido em dados reais</span>
+          <div class="proof-pill">
+            <span class="pf"><svg class="i"><use href="#i-target"/></svg><b data-v="acerto"></b><span data-t="pf1">com acerto</span></span><i aria-hidden="true"></i>
+            <span class="pf"><svg class="i"><use href="#i-trending-up"/></svg><b data-v="dd"></b><span data-t="pf2">pts na venda nova</span></span><i aria-hidden="true"></i>
+            <span class="pf"><svg class="i"><use href="#i-zap"/></svg><b data-v="lat"></b><span data-t="pf3">por pessoa</span></span><i aria-hidden="true"></i>
+            <span class="pf"><svg class="i"><use href="#i-piggy-bank"/></svg><b>R$ 0</b><span data-t="pf4">de gasto</span></span>
+          </div>
+        </div>
       </div>
-      <div data-only="en">
-        <p class="eyebrow">For online stores and grocery shops</p>
-        <h1>Show each customer the 10 products they are most likely to buy, and say why</h1>
-        <p class="lead">Customers come to your site, browse, search and often leave with nothing, or only with what they came for. This project uses what your store already records (what the person <b>viewed</b>, <b>bought</b> and <b>searched for</b>) to build, on the spot, a list of 10 suggestions for each person, with the reason for each one.</p>
-      </div>
-      <div class="ctas">
-        <a class="btn pri" href="#exemplo"><svg class="i"><use href="#i-down"/></svg><span data-t="cta1">Ver um exemplo</span></a>
-        <a class="btn sec" href="#ganho"><svg class="i"><use href="#i-chart"/></svg><span data-t="cta2">Ver os números medidos</span></a>
-      </div>
-    </div>
-    <div class="card journey">
-      <div data-only="pt">
-        <p class="jt">O que acontece hoje na maioria das lojas</p>
-        <div class="jstep"><div class="ic"><svg class="i"><use href="#i-eye"/></svg></div><div><b>Ele entra e olha</b><p>Abre 5, 10 produtos. Cada clique já fica registrado no seu site.</p></div></div>
-        <div class="jstep"><div class="ic"><svg class="i"><use href="#i-search"/></svg></div><div><b>Ele pesquisa</b><p>Digita "whey" ou abre uma categoria. A busca diz o que ele quer agora.</p></div></div>
-        <div class="jstep lost"><div class="ic"><svg class="i"><use href="#i-exit"/></svg></div><div><b>Ele vai embora</b><p>Se o que ele quer não aparece na frente dele, a venda fica para outra loja.</p></div></div>
-        <div class="jstep win"><div class="ic"><svg class="i"><use href="#i-list"/></svg></div><div><b>Com a lista certa</b><p>10 produtos escolhidos para ele, com o motivo, na página do produto, no carrinho ou numa mensagem depois.</p></div></div>
-      </div>
-      <div data-only="en">
-        <p class="jt">What happens today in most stores</p>
-        <div class="jstep"><div class="ic"><svg class="i"><use href="#i-eye"/></svg></div><div><b>They come in and browse</b><p>They open 5 or 10 products. Every click is already recorded by your site.</p></div></div>
-        <div class="jstep"><div class="ic"><svg class="i"><use href="#i-search"/></svg></div><div><b>They search</b><p>They type "whey" or open a category. The search says what they want right now.</p></div></div>
-        <div class="jstep lost"><div class="ic"><svg class="i"><use href="#i-exit"/></svg></div><div><b>They leave</b><p>If what they want is not in front of them, the sale goes to another store.</p></div></div>
-        <div class="jstep win"><div class="ic"><svg class="i"><use href="#i-list"/></svg></div><div><b>With the right list</b><p>10 products picked for them, with the reason, on the product page, in the cart or in a message later.</p></div></div>
+      <div class="spot journey rv" style="--sc:var(--accent2)">
+        <div data-only="pt">
+          <p class="jt"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>O que acontece hoje na maioria das lojas</p>
+          <div class="jstep"><div class="ic"><svg class="i"><use href="#i-eye"/></svg></div><div><b>Ele entra e olha</b><p>Abre 5, 10 produtos. Cada clique já fica registrado no seu site.</p></div></div>
+          <div class="jstep"><div class="ic"><svg class="i"><use href="#i-search"/></svg></div><div><b>Ele pesquisa</b><p>Digita "whey" ou abre uma categoria. A busca diz o que ele quer agora.</p></div></div>
+          <div class="jstep lost"><div class="ic"><svg class="i"><use href="#i-log-out"/></svg></div><div><b>Ele vai embora</b><p>Se o que ele quer não aparece na frente dele, a venda fica para outra loja.</p></div></div>
+          <div class="jstep win"><div class="ic"><svg class="i"><use href="#i-list-checks"/></svg></div><div><b>Com a lista certa</b><p>10 produtos escolhidos para ele, com o motivo, na página do produto, no carrinho ou numa mensagem depois.</p></div></div>
+        </div>
+        <div data-only="en">
+          <p class="jt"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>What happens today in most stores</p>
+          <div class="jstep"><div class="ic"><svg class="i"><use href="#i-eye"/></svg></div><div><b>They come in and browse</b><p>They open 5 or 10 products. Every click is already recorded by your site.</p></div></div>
+          <div class="jstep"><div class="ic"><svg class="i"><use href="#i-search"/></svg></div><div><b>They search</b><p>They type "whey" or open a category. The search says what they want right now.</p></div></div>
+          <div class="jstep lost"><div class="ic"><svg class="i"><use href="#i-log-out"/></svg></div><div><b>They leave</b><p>If what they want is not in front of them, the sale goes to another store.</p></div></div>
+          <div class="jstep win"><div class="ic"><svg class="i"><use href="#i-list-checks"/></svg></div><div><b>With the right list</b><p>10 products picked for them, with the reason, on the product page, in the cart or in a message later.</p></div></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- 2. Exemplo ilustrativo -->
+<div class="wrap">
+  <!-- 2. Exemplo ilustrativo (21st: ln-dev7/how-it-works-02, linha do tempo vertical com ícone por passo) -->
   <section class="lg" id="exemplo">
-    <div data-only="pt">
-      <p class="eyebrow warn">Exemplo ilustrativo</p>
-      <h2>Um exemplo, passo a passo: a cliente que pesquisou "whey"</h2>
-      <p class="sub">A cliente e os produtos abaixo são inventados, só para mostrar a ideia. O jeito de escolher e os tipos de motivo são os mesmos que o modelo usa nos dados reais (veja uma visita de verdade mais abaixo).</p>
-    </div>
-    <div data-only="en">
-      <p class="eyebrow warn">Illustrative example</p>
-      <h2>An example, step by step: the customer who searched for "whey"</h2>
-      <p class="sub">The customer and the products below are made up, just to show the idea. The way of choosing and the kinds of reasons are the same ones the model uses on the real data (see a real visit further down).</p>
+    <div class="sec-h rv">
+      <div data-only="pt">
+        <p class="eyebrow warn"><svg class="i"><use href="#i-triangle-alert"/></svg>Exemplo ilustrativo</p>
+        <h2>Um exemplo, passo a passo: a cliente que pesquisou "whey"</h2>
+        <p class="sub">A cliente e os produtos abaixo são inventados, só para mostrar a ideia. O jeito de escolher e os tipos de motivo são os mesmos que o modelo usa nos dados reais (veja uma visita de verdade mais abaixo).</p>
+      </div>
+      <div data-only="en">
+        <p class="eyebrow warn"><svg class="i"><use href="#i-triangle-alert"/></svg>Illustrative example</p>
+        <h2>An example, step by step: the customer who searched for "whey"</h2>
+        <p class="sub">The customer and the products below are made up, just to show the idea. The way of choosing and the kinds of reasons are the same ones the model uses on the real data (see a real visit further down).</p>
+      </div>
     </div>
     <div class="ex">
       <div>
-        <ol class="steps" data-only="pt">
-          <li><div><span class="when">Há 2 semanas</span><b>Ela compra bebida proteica sabor chocolate</b><p>Como estava logada na sua loja, a compra fica guardada no histórico dela.</p></div></li>
-          <li><div><span class="when">Hoje</span><b>Ela digita <span class="q">"whey"</span> na busca</b><p>A busca mostra 40 produtos. Ela clica no Whey 900 g baunilha e abre também uma barra de proteína.</p></div></li>
-          <li><div><span class="when">Em 25 milésimos de segundo</span><b>O modelo junta as pistas</b><p>Ele olha o que ela comprou antes, o que viu agora, o que pesquisou e o que outras pessoas com o mesmo caminho compraram. Dá uma nota para cada produto e fica com os 10 maiores.</p></div></li>
-          <li><div><span class="when">Na tela dela</span><b>A lista aparece com o motivo</b><p>No carrinho ou na página do produto, cada sugestão diz por que está ali (veja a tela do celular). O motivo ajuda ela a entender a sugestão e ajuda você a conferir se o modelo faz sentido.</p></div></li>
-          <li class="star"><div><span class="when">A venda nova</span><b>Ela leva o Whey 900 g chocolate, que nem tinha aberto</b><p>Esse é o produto que ela não tinha visto. É a venda que a parte "só produtos novos" mede, e foi onde a busca mais ajudou no teste: o acerto subiu de <b data-v="novo_sem"></b> para <b data-v="novo_com"></b>.</p></div></li>
-          <li><div><span class="when">Na semana seguinte</span><b>"O que você costuma comprar está mais barato"</b><p>A bebida de chocolate entra em promoção e ela recebe o aviso por e-mail ou WhatsApp. (No projeto, esta parte roda com preços simulados, porque a base pública não tem preço por dia.)</p></div></li>
+        <ol class="tl" data-only="pt">
+          <li class="rv"><span class="node">01</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-shopping-bag"/></svg></span><div><span class="when">Há 2 semanas</span><h3>Ela compra bebida proteica sabor chocolate</h3><p>Como estava logada na sua loja, a compra fica guardada no histórico dela.</p></div></div></li>
+          <li class="rv"><span class="node">02</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-search"/></svg></span><div><span class="when">Hoje</span><h3>Ela digita <span class="q">"whey"</span> na busca</h3><p>A busca mostra 40 produtos. Ela clica no Whey 900 g baunilha e abre também uma barra de proteína.</p></div></div></li>
+          <li class="rv"><span class="node">03</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-combine"/></svg></span><div><span class="when">Em 25 milésimos de segundo</span><h3>O modelo junta as pistas</h3><p>Ele olha o que ela comprou antes, o que viu agora, o que pesquisou e o que outras pessoas com o mesmo caminho compraram. Dá uma nota para cada produto e fica com os 10 maiores.</p></div></div></li>
+          <li class="rv"><span class="node">04</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-smartphone"/></svg></span><div><span class="when">Na tela dela</span><h3>A lista aparece com o motivo</h3><p>No carrinho ou na página do produto, cada sugestão diz por que está ali (veja a tela do celular). O motivo ajuda ela a entender a sugestão e ajuda você a conferir se o modelo faz sentido.</p></div></div></li>
+          <li class="rv star"><span class="node">05</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-circle-check"/></svg></span><div><span class="when">A venda nova</span><h3>Ela leva o Whey 900 g chocolate, que nem tinha aberto</h3><p>Esse é o produto que ela não tinha visto. É a venda que a parte "só produtos novos" mede, e foi onde a busca mais ajudou no teste: o acerto subiu de <b data-v="novo_sem"></b> para <b data-v="novo_com"></b>.</p></div></div></li>
+          <li class="rv"><span class="node">06</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-bell-ring"/></svg></span><div><span class="when">Na semana seguinte</span><h3>"O que você costuma comprar está mais barato"</h3><p>A bebida de chocolate entra em promoção e ela recebe o aviso por e-mail ou WhatsApp. (No projeto, esta parte roda com preços simulados, porque a base pública não tem preço por dia.)</p></div></div></li>
         </ol>
-        <ol class="steps" data-only="en">
-          <li><div><span class="when">2 weeks ago</span><b>She buys a chocolate protein drink</b><p>She was logged in to your store, so the purchase is saved in her history.</p></div></li>
-          <li><div><span class="when">Today</span><b>She types <span class="q">"whey"</span> in the search</b><p>The search shows 40 products. She clicks the 900 g vanilla whey and also opens a protein bar.</p></div></li>
-          <li><div><span class="when">In 25 milliseconds</span><b>The model puts the clues together</b><p>It looks at what she bought before, what she viewed now, what she searched for and what other people on the same path bought. It scores each product and keeps the top 10.</p></div></li>
-          <li><div><span class="when">On her screen</span><b>The list shows up with the reason</b><p>In the cart or on the product page, each suggestion says why it is there (see the phone screen). The reason helps her understand the suggestion and helps you check that the model makes sense.</p></div></li>
-          <li class="star"><div><span class="when">The new sale</span><b>She buys the 900 g chocolate whey, which she never opened</b><p>This is the product she had not seen. It is the sale that "new products only" measures, and it is where search helped the most in the test: hit rate went from <b data-v="novo_sem"></b> to <b data-v="novo_com"></b>.</p></div></li>
-          <li><div><span class="when">The following week</span><b>"What you usually buy is cheaper now"</b><p>The chocolate drink goes on sale and she gets the alert by email or WhatsApp. (In the project this part runs on simulated prices, because the public data has no daily prices.)</p></div></li>
+        <ol class="tl" data-only="en">
+          <li class="rv"><span class="node">01</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-shopping-bag"/></svg></span><div><span class="when">2 weeks ago</span><h3>She buys a chocolate protein drink</h3><p>She was logged in to your store, so the purchase is saved in her history.</p></div></div></li>
+          <li class="rv"><span class="node">02</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-search"/></svg></span><div><span class="when">Today</span><h3>She types <span class="q">"whey"</span> in the search</h3><p>The search shows 40 products. She clicks the 900 g vanilla whey and also opens a protein bar.</p></div></div></li>
+          <li class="rv"><span class="node">03</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-combine"/></svg></span><div><span class="when">In 25 milliseconds</span><h3>The model puts the clues together</h3><p>It looks at what she bought before, what she viewed now, what she searched for and what other people on the same path bought. It scores each product and keeps the top 10.</p></div></div></li>
+          <li class="rv"><span class="node">04</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-smartphone"/></svg></span><div><span class="when">On her screen</span><h3>The list shows up with the reason</h3><p>In the cart or on the product page, each suggestion says why it is there (see the phone screen). The reason helps her understand the suggestion and helps you check that the model makes sense.</p></div></div></li>
+          <li class="rv star"><span class="node">05</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-circle-check"/></svg></span><div><span class="when">The new sale</span><h3>She buys the 900 g chocolate whey, which she never opened</h3><p>This is the product she had not seen. It is the sale that "new products only" measures, and it is where search helped the most in the test: hit rate went from <b data-v="novo_sem"></b> to <b data-v="novo_com"></b>.</p></div></div></li>
+          <li class="rv"><span class="node">06</span><div class="tl-card"><span class="tl-ic"><svg class="i"><use href="#i-bell-ring"/></svg></span><div><span class="when">The following week</span><h3>"What you usually buy is cheaper now"</h3><p>The chocolate drink goes on sale and she gets the alert by email or WhatsApp. (In the project this part runs on simulated prices, because the public data has no daily prices.)</p></div></div></li>
         </ol>
-        <div class="card why-not">
-          <svg class="i ic"><use href="#i-alert"/></svg>
+        <div class="why-not rv">
+          <span class="wn-ic"><svg class="i"><use href="#i-triangle-alert"/></svg></span>
           <p data-only="pt"><b>Por que não mostrar os mais vendidos?</b> Porque são iguais para todo mundo. No teste, a lista dos mais vendidos acertou só <b data-v="pop"></b> do que as pessoas compraram. Ela não quer o arroz mais vendido da loja, ela quer whey.</p>
           <p data-only="en"><b>Why not just show the best sellers?</b> Because they are the same for everyone. In the test, the best sellers list got only <b data-v="pop"></b> of what people bought. She does not want the store's best selling rice, she wants whey.</p>
         </div>
       </div>
 
-      <div class="phone-col">
+      <div class="phone-col rv">
         <div class="phone">
           <div class="notch"></div>
           <div class="status"><span>9:41</span><span>5G</span></div>
@@ -410,12 +562,12 @@ footer p{margin:4px 0}
             <div class="searchbox"><svg class="i"><use href="#i-search"/></svg>whey</div>
           </div>
           <div class="plist-h"><b data-t="ph_tit">Sugestões para você</b><span data-t="ph_de">6 de 10</span></div>
-          <div class="prow"><div class="thumb v"><svg class="i"><use href="#i-tub"/></svg></div><div><div class="nm" data-t="p1n">Whey 900 g baunilha</div><div class="rs" data-t="p1r">Você clicou nele na busca por "whey"</div><span class="sig s" data-t="sig_busca">busca</span></div></div>
-          <div class="prow bought"><div class="thumb c"><svg class="i"><use href="#i-tub"/></svg></div><div><div class="nm" data-t="p2n" data-flag="comprou">Whey 900 g chocolate</div><div class="rs" data-t="p2r">Apareceu em 2º na sua busca por "whey"</div><span class="sig s" data-t="sig_busca">busca</span></div></div>
-          <div class="prow"><div class="thumb c"><svg class="i"><use href="#i-bottle"/></svg></div><div><div class="nm" data-t="p3n">Bebida proteica chocolate, 6 un.</div><div class="rs" data-t="p3r">Você comprou há 2 semanas</div><span class="sig" data-t="sig_comprou">comprou antes</span></div></div>
-          <div class="prow"><div class="thumb s"><svg class="i"><use href="#i-bottle"/></svg></div><div><div class="nm" data-t="p4n">Bebida proteica morango</div><div class="rs" data-t="p4r">Quem comprou a de chocolate também levou esta</div><span class="sig" data-t="sig_junto">quem comprou também levou</span></div></div>
-          <div class="prow"><div class="thumb"><svg class="i"><use href="#i-bar"/></svg></div><div><div class="nm" data-t="p5n">Barra de proteína amendoim</div><div class="rs" data-t="p5r">Você viu agora há pouco</div><span class="sig" data-t="sig_viu">o que você viu</span></div></div>
-          <div class="prow"><div class="thumb"><svg class="i"><use href="#i-shaker"/></svg></div><div><div class="nm" data-t="p6n">Coqueteleira 600 ml</div><div class="rs" data-t="p6r">Costuma ser vista logo depois do whey</div><span class="sig" data-t="sig_seq">sequência</span></div></div>
+          <div class="prow"><div class="thumb v"><svg class="i"><use href="#i-dumbbell"/></svg></div><div><div class="nm" data-t="p1n">Whey 900 g baunilha</div><div class="rs" data-t="p1r">Você clicou nele na busca por "whey"</div><span class="sig s"><svg class="i"><use href="#i-search"/></svg><span data-t="sig_busca">busca</span></span></div></div>
+          <div class="prow bought"><div class="thumb c"><svg class="i"><use href="#i-dumbbell"/></svg></div><div><div class="nm" data-t="p2n" data-flag="comprou">Whey 900 g chocolate</div><div class="rs" data-t="p2r">Apareceu em 2º na sua busca por "whey"</div><span class="sig s"><svg class="i"><use href="#i-search"/></svg><span data-t="sig_busca">busca</span></span></div></div>
+          <div class="prow"><div class="thumb c"><svg class="i"><use href="#i-milk"/></svg></div><div><div class="nm" data-t="p3n">Bebida proteica chocolate, 6 un.</div><div class="rs" data-t="p3r">Você comprou há 2 semanas</div><span class="sig"><svg class="i"><use href="#i-history"/></svg><span data-t="sig_comprou">comprou antes</span></span></div></div>
+          <div class="prow"><div class="thumb s"><svg class="i"><use href="#i-milk"/></svg></div><div><div class="nm" data-t="p4n">Bebida proteica morango</div><div class="rs" data-t="p4r">Quem comprou a de chocolate também levou esta</div><span class="sig"><svg class="i"><use href="#i-users"/></svg><span data-t="sig_junto">quem comprou também levou</span></span></div></div>
+          <div class="prow"><div class="thumb"><svg class="i"><use href="#i-candy"/></svg></div><div><div class="nm" data-t="p5n">Barra de proteína amendoim</div><div class="rs" data-t="p5r">Você viu agora há pouco</div><span class="sig"><svg class="i"><use href="#i-eye"/></svg><span data-t="sig_viu">o que você viu</span></span></div></div>
+          <div class="prow"><div class="thumb"><svg class="i"><use href="#i-cup-soda"/></svg></div><div><div class="nm" data-t="p6n">Coqueteleira 600 ml</div><div class="rs" data-t="p6r">Costuma ser vista logo depois do whey</div><span class="sig"><svg class="i"><use href="#i-route"/></svg><span data-t="sig_seq">sequência</span></span></div></div>
           <div class="more" data-t="ph_mais">e mais 4 sugestões</div>
         </div>
         <div class="phone-cap">
@@ -426,39 +578,47 @@ footer p{margin:4px 0}
     </div>
   </section>
 
-  <!-- 3. O que a loja ganha -->
+  <!-- 3. O que a loja ganha (21st: uilayout.contact/stats-bento) -->
   <section class="lg" id="ganho">
-    <div data-only="pt">
-      <p class="eyebrow ok">Medido em dados reais</p>
-      <h2>O que a sua loja ganha</h2>
-      <p class="sub">Números do teste com <span data-v="casos"></span> visitas reais que terminaram em compra. Nenhum modelo viu essas visitas antes de ser testado.</p>
+    <div class="sec-h rv">
+      <p class="eyebrow ok"><svg class="i"><use href="#i-chart-column"/></svg><span data-t="g_eye">Medido em dados reais</span></p>
+      <h2 data-t="g_h">O que a sua loja ganha</h2>
+      <p class="sub" data-t="g_sub">Números do teste com <span data-v="casos"></span> visitas reais que terminaram em compra. Nenhum modelo viu essas visitas antes de ser testado.</p>
     </div>
-    <div data-only="en">
-      <p class="eyebrow ok">Measured on real data</p>
-      <h2>What your store gains</h2>
-      <p class="sub">Numbers from the test with <span data-v="casos"></span> real visits that ended in a purchase. No model saw these visits before being tested.</p>
-    </div>
-    <div class="gains">
-      <div class="card gain"><div class="v" data-v="acerto"></div>
-        <div data-only="pt"><div class="t">das visitas com compra tiveram acerto na lista</div><p>Em <span data-v="acerto_n"></span> de cada 100 visitas que terminaram em compra, a pessoa levou pelo menos 1 dos 10 produtos sugeridos.</p></div>
-        <div data-only="en"><div class="t">of visits with a purchase had a hit on the list</div><p>In <span data-v="acerto_n"></span> out of every 100 visits that ended in a purchase, the person bought at least 1 of the 10 suggested products.</p></div>
+    <div class="bento">
+      <div class="b-main rv">
+        <div class="b-lines" aria-hidden="true"></div>
+        <div>
+          <span class="b-tag"><svg class="i"><use href="#i-target"/></svg><span data-t="g1_tag">Acerto na lista</span></span>
+          <div class="b-big" data-v="acerto"></div>
+          <div class="b-sub" data-t="g1_t">das visitas com compra tiveram acerto na lista</div>
+        </div>
+        <div class="waffle" aria-hidden="true"></div>
+        <p data-t="g1_p">Em <span data-v="acerto_n"></span> de cada 100 visitas que terminaram em compra, a pessoa levou pelo menos 1 dos 10 produtos sugeridos.</p>
       </div>
-      <div class="card gain"><div class="v"><span data-v="dd"></span><small data-t="pts_curto">pontos</small></div>
-        <div data-only="pt"><div class="t">nos produtos que a pessoa ainda não tinha visto</div><p>Só por usar a busca, o acerto da venda nova subiu de <span data-v="novo_sem"></span> para <span data-v="novo_com"></span>, quase 3 vezes mais.</p></div>
-        <div data-only="en"><div class="t">on products the person had not seen yet</div><p>Just by using search, the hit rate on new sales went from <span data-v="novo_sem"></span> to <span data-v="novo_com"></span>, almost 3 times more.</p></div>
+      <div class="b-a bcard rv">
+        <div class="b-a-txt">
+          <span class="b-tag2"><svg class="i"><use href="#i-trending-up"/></svg><span data-t="g2_tag">Venda nova</span></span>
+          <div class="b-val"><span data-v="dd"></span><small data-t="pts_curto">pontos</small></div>
+          <p data-t="g2_p">nos produtos que a pessoa ainda não tinha visto. Só por usar a busca, o acerto subiu de <span data-v="novo_sem"></span> para <span data-v="novo_com"></span>, quase 3 vezes mais.</p>
+        </div>
+        <div class="mini" aria-hidden="true">
+          <div class="mb"><b data-v="novo_sem"></b><div class="mb-trk"><div class="mb-bar" data-m="hibrido_sem_busca"></div></div><span data-t="mb_sem">sem busca</span></div>
+          <div class="mb on"><b data-v="novo_com"></b><div class="mb-trk"><div class="mb-bar" data-m="hibrido_com_busca"></div></div><span data-t="mb_com">com busca</span></div>
+        </div>
       </div>
-      <div class="card gain"><div class="v" data-v="lat"></div>
-        <div data-only="pt"><div class="t">para montar a lista de uma pessoa</div><p>Num computador comum, sem placa de vídeo. Rápido o bastante para a lista aparecer na hora, enquanto ela navega.</p></div>
-        <div data-only="en"><div class="t">to build one person's list</div><p>On a regular computer, no graphics card. Fast enough for the list to show up right away, while they browse.</p></div>
+      <div class="b-b bcard rv">
+        <span class="b-ic"><svg class="i"><use href="#i-zap"/></svg></span>
+        <div><div class="b-val" data-v="lat"></div><p data-t="g3_p">para montar a lista de uma pessoa, num computador comum, sem placa de vídeo. Aparece na hora, enquanto ela navega.</p></div>
       </div>
-      <div class="card gain"><div class="v">R$ 0</div>
-        <div data-only="pt"><div class="t">de gasto com ferramenta paga</div><p>Sem API paga e sem placa de vídeo. O teste inteiro rodou num servidor simples de 2 núcleos.</p></div>
-        <div data-only="en"><div class="t">spent on paid tools</div><p>No paid API and no graphics card. The whole test ran on a simple 2-core server.</p></div>
+      <div class="b-c bcard rv">
+        <span class="b-ic"><svg class="i"><use href="#i-piggy-bank"/></svg></span>
+        <div><div class="b-val">R$ 0</div><p data-t="g4_p">de gasto com ferramenta paga: sem API paga e sem placa de vídeo. O teste inteiro rodou num servidor simples de 2 núcleos.</p></div>
       </div>
     </div>
     <div class="duo">
-      <div class="card vs">
-        <h3 data-t="vs_h">A lista feita para cada pessoa contra a lista igual para todos</h3>
+      <div class="card vs rv">
+        <h3><svg class="i"><use href="#i-chart-column"/></svg><span data-t="vs_h">A lista feita para cada pessoa contra a lista igual para todos</span></h3>
         <div class="grp">
           <div class="gt" data-t="vs_g1">Acerto contando tudo que a pessoa comprou</div>
           <div class="vrow" data-m="popularidade" data-l="geral"><div class="nm" data-t="vs_pop">Mais vendidos (igual para todos)</div><div class="trk"><div class="fl"></div></div><div class="vv"></div></div>
@@ -473,8 +633,8 @@ footer p{margin:4px 0}
         </div>
         <p class="note" data-t="vs_nota">Mostrar de novo o que a pessoa já viu acerta muito, mas quase não traz venda nova. O que traz venda nova é a busca.</p>
       </div>
-      <div class="card srcbox">
-        <h3 data-t="src_h">De onde vêm esses números</h3>
+      <div class="card srcbox rv">
+        <h3><svg class="i"><use href="#i-globe"/></svg><span data-t="src_h">De onde vêm esses números</span></h3>
         <div data-only="pt">
           <p>Dados públicos de uma loja online europeia, de janeiro a junho de 2016, liberados para pesquisa na competição CIKM Cup 2016 (Diginetica). O teste usa as visitas com compra de maio.</p>
           <p>A loja trocou o nome de cada produto por um número antes de liberar os dados. Por isso, na parte técnica, você vê "Produto #25911" e não "Whey 900 g chocolate".</p>
@@ -489,44 +649,42 @@ footer p{margin:4px 0}
     </div>
   </section>
 
-  <!-- 4. Como fazer na loja -->
+  <!-- 4. Como fazer na loja (21st: uiable/block-feature-32, cartões com borda que segue o mouse) -->
   <section class="lg" id="implementar">
-    <div data-only="pt">
-      <p class="eyebrow">Na sua loja</p>
-      <h2>O que precisa para fazer isso na sua loja</h2>
-      <p class="sub">O cliente não instala nada. O modelo lê o que o seu site já registra e devolve uma lista de 10 produtos para cada pessoa.</p>
+    <div class="sec-h rv">
+      <p class="eyebrow"><svg class="i"><use href="#i-store"/></svg><span data-t="i_eye">Na sua loja</span></p>
+      <h2 data-t="i_h">O que precisa para fazer isso na sua loja</h2>
+      <p class="sub" data-t="i_sub">O cliente não instala nada. O modelo lê o que o seu site já registra e devolve uma lista de 10 produtos para cada pessoa.</p>
     </div>
-    <div data-only="en">
-      <p class="eyebrow">In your store</p>
-      <h2>What it takes to do this in your store</h2>
-      <p class="sub">Customers install nothing. The model reads what your site already records and returns a list of 10 products for each person.</p>
-    </div>
-    <div class="grid3">
-      <div class="card how"><div class="hi"><svg class="i"><use href="#i-db"/></svg></div>
-        <div data-only="pt"><h3>1. Os dados que você já tem</h3><ul><li><b>Visitas:</b> quais produtos cada pessoa abriu, e quando.</li><li><b>Buscas:</b> o que ela digitou, o que a busca mostrou e onde clicou.</li><li><b>Compras:</b> o que levou, de preferência com o cliente logado.</li><li><b>Opcional:</b> o preço de cada dia, para o aviso de promoção.</li></ul><p class="foot">A maioria das lojas virtuais já registra isso, na própria plataforma ou numa ferramenta de análise como o Google Analytics. Alguns meses de histórico bastam para começar (no teste foram 4).</p></div>
-        <div data-only="en"><h3>1. The data you already have</h3><ul><li><b>Visits:</b> which products each person opened, and when.</li><li><b>Searches:</b> what they typed, what the search showed and what they clicked.</li><li><b>Purchases:</b> what they bought, ideally with the customer logged in.</li><li><b>Optional:</b> each day's price, for the sale alert.</li></ul><p class="foot">Most online stores already record this, in the platform itself or in an analytics tool such as Google Analytics. A few months of history is enough to start (the test used 4).</p></div>
+    <div class="feats">
+      <div class="spot feat rv" style="--sc:var(--accent2)">
+        <span class="ftile"><svg class="i"><use href="#i-database"/></svg></span>
+        <div data-only="pt"><h3>1. Os dados que você já tem</h3><ul class="ilist"><li><svg class="i"><use href="#i-eye"/></svg><span><b>Visitas:</b> quais produtos cada pessoa abriu, e quando.</span></li><li><svg class="i"><use href="#i-search"/></svg><span><b>Buscas:</b> o que ela digitou, o que a busca mostrou e onde clicou.</span></li><li><svg class="i"><use href="#i-shopping-bag"/></svg><span><b>Compras:</b> o que levou, de preferência com o cliente logado.</span></li><li><svg class="i"><use href="#i-tag"/></svg><span><b>Opcional:</b> o preço de cada dia, para o aviso de promoção.</span></li></ul><p class="foot">A maioria das lojas virtuais já registra isso, na própria plataforma ou numa ferramenta de análise como o <span class="nowrap"><svg class="logo"><use href="#l-ga"/></svg>Google Analytics</span>. Alguns meses de histórico bastam para começar (no teste foram 4).</p></div>
+        <div data-only="en"><h3>1. The data you already have</h3><ul class="ilist"><li><svg class="i"><use href="#i-eye"/></svg><span><b>Visits:</b> which products each person opened, and when.</span></li><li><svg class="i"><use href="#i-search"/></svg><span><b>Searches:</b> what they typed, what the search showed and what they clicked.</span></li><li><svg class="i"><use href="#i-shopping-bag"/></svg><span><b>Purchases:</b> what they bought, ideally with the customer logged in.</span></li><li><svg class="i"><use href="#i-tag"/></svg><span><b>Optional:</b> each day's price, for the sale alert.</span></li></ul><p class="foot">Most online stores already record this, in the platform itself or in an analytics tool such as <span class="nowrap"><svg class="logo"><use href="#l-ga"/></svg>Google Analytics</span>. A few months of history is enough to start (the test used 4).</p></div>
       </div>
-      <div class="card how"><div class="hi"><svg class="i"><use href="#i-layout"/></svg></div>
-        <div data-only="pt"><h3>2. Onde a lista aparece</h3><ul><li><b>Página do produto:</b> "quem viu este também levou".</li><li><b>Carrinho:</b> "antes de pagar, não esqueça".</li><li><b>E-mail ou WhatsApp:</b> "o que você compra entrou em promoção".</li><li><b>Página inicial:</b> "escolhidos para você".</li></ul><p class="foot">Cada sugestão vai com o motivo, como na tela do exemplo.</p></div>
-        <div data-only="en"><h3>2. Where the list shows up</h3><ul><li><b>Product page:</b> "people who viewed this also bought".</li><li><b>Cart:</b> "before you pay, don't forget".</li><li><b>Email or WhatsApp:</b> "what you buy is on sale".</li><li><b>Home page:</b> "picked for you".</li></ul><p class="foot">Each suggestion comes with its reason, like on the example screen.</p></div>
+      <div class="spot feat t-ok rv" style="--sc:var(--ok)">
+        <span class="ftile"><svg class="i"><use href="#i-layout-panel-left"/></svg></span>
+        <div data-only="pt"><h3>2. Onde a lista aparece</h3><ul class="ilist"><li><svg class="i"><use href="#i-package"/></svg><span><b>Página do produto:</b> "quem viu este também levou".</span></li><li><svg class="i"><use href="#i-shopping-cart"/></svg><span><b>Carrinho:</b> "antes de pagar, não esqueça".</span></li><li><svg class="i"><use href="#i-mail"/></svg><span><b>E-mail:</b> "o que você compra entrou em promoção".</span></li><li><svg class="logo li-logo"><use href="#l-whatsapp"/></svg><span><b>WhatsApp:</b> o mesmo aviso, com o link do produto.</span></li><li><svg class="i"><use href="#i-house"/></svg><span><b>Página inicial:</b> "escolhidos para você".</span></li></ul><p class="foot">Cada sugestão vai com o motivo, como na tela do exemplo.</p></div>
+        <div data-only="en"><h3>2. Where the list shows up</h3><ul class="ilist"><li><svg class="i"><use href="#i-package"/></svg><span><b>Product page:</b> "people who viewed this also bought".</span></li><li><svg class="i"><use href="#i-shopping-cart"/></svg><span><b>Cart:</b> "before you pay, don't forget".</span></li><li><svg class="i"><use href="#i-mail"/></svg><span><b>Email:</b> "what you buy is on sale".</span></li><li><svg class="logo li-logo"><use href="#l-whatsapp"/></svg><span><b>WhatsApp:</b> the same alert, with the product link.</span></li><li><svg class="i"><use href="#i-house"/></svg><span><b>Home page:</b> "picked for you".</span></li></ul><p class="foot">Each suggestion comes with its reason, like on the example screen.</p></div>
       </div>
-      <div class="card how"><div class="hi"><svg class="i"><use href="#i-ab"/></svg></div>
-        <div data-only="pt"><h3>3. Como saber se deu certo</h3><p style="margin-top:0"><b>Teste A/B:</b> metade dos clientes, sorteada, vê a lista nova; a outra metade vê a loja como está hoje. Depois de 2 a 4 semanas, você compara:</p><ul><li>vendas por visita;</li><li>valor médio do pedido;</li><li>quantas pessoas clicam na lista.</li></ul><p class="foot">Só fica com a lista se ela ganhar. O teste com o passado desta página não substitui esse passo.</p></div>
-        <div data-only="en"><h3>3. How to know it worked</h3><p style="margin-top:0"><b>A/B test:</b> a random half of customers sees the new list; the other half sees the store as it is today. After 2 to 4 weeks you compare:</p><ul><li>sales per visit;</li><li>average order value;</li><li>how many people click the list.</li></ul><p class="foot">Keep the list only if it wins. The test on past data in this page does not replace this step.</p></div>
+      <div class="spot feat t-warn rv" style="--sc:var(--new)">
+        <span class="ftile"><svg class="i"><use href="#i-split"/></svg></span>
+        <div data-only="pt"><h3>3. Como saber se deu certo</h3><p class="lead2"><b>Teste A/B:</b> metade dos clientes, sorteada, vê a lista nova; a outra metade vê a loja como está hoje. Depois de 2 a 4 semanas, você compara:</p><ul class="ilist"><li><svg class="i"><use href="#i-check"/></svg><span>vendas por visita;</span></li><li><svg class="i"><use href="#i-check"/></svg><span>valor médio do pedido;</span></li><li><svg class="i"><use href="#i-check"/></svg><span>quantas pessoas clicam na lista.</span></li></ul><p class="foot">Só fica com a lista se ela ganhar. O teste com o passado desta página não substitui esse passo.</p></div>
+        <div data-only="en"><h3>3. How to know it worked</h3><p class="lead2"><b>A/B test:</b> a random half of customers sees the new list; the other half sees the store as it is today. After 2 to 4 weeks you compare:</p><ul class="ilist"><li><svg class="i"><use href="#i-check"/></svg><span>sales per visit;</span></li><li><svg class="i"><use href="#i-check"/></svg><span>average order value;</span></li><li><svg class="i"><use href="#i-check"/></svg><span>how many people click the list.</span></li></ul><p class="foot">Keep the list only if it wins. The test on past data in this page does not replace this step.</p></div>
       </div>
     </div>
-    <div class="card stepper">
-      <div class="st"><div class="n">1</div><div><b data-t="s1b">Juntar os dados</b><span data-t="s1s">visitas, buscas e compras</span></div></div>
-      <div class="st"><div class="n">2</div><div><b data-t="s2b">Medir com o passado</b><span data-t="s2s">como nesta página</span></div></div>
-      <div class="st"><div class="n">3</div><div><b data-t="s3b">Ligar para parte dos clientes</b><span data-t="s3s">página do produto ou carrinho</span></div></div>
-      <div class="st"><div class="n">4</div><div><b data-t="s4b">Comparar no teste A/B</b><span data-t="s4s">2 a 4 semanas</span></div></div>
-      <div class="st"><div class="n">5</div><div><b data-t="s5b">Ajustar e ampliar</b><span data-t="s5s">se a lista ganhar</span></div></div>
-    </div>
+    <ol class="stepper rv">
+      <li class="st"><span class="n"><svg class="i"><use href="#i-database"/></svg></span><div><b><span class="sn">1</span><span data-t="s1b">Juntar os dados</span></b><span data-t="s1s">visitas, buscas e compras</span></div></li>
+      <li class="st"><span class="n"><svg class="i"><use href="#i-history"/></svg></span><div><b><span class="sn">2</span><span data-t="s2b">Medir com o passado</span></b><span data-t="s2s">como nesta página</span></div></li>
+      <li class="st"><span class="n"><svg class="i"><use href="#i-users"/></svg></span><div><b><span class="sn">3</span><span data-t="s3b">Ligar para parte dos clientes</span></b><span data-t="s3s">página do produto ou carrinho</span></div></li>
+      <li class="st"><span class="n"><svg class="i"><use href="#i-split"/></svg></span><div><b><span class="sn">4</span><span data-t="s4b">Comparar no teste A/B</span></b><span data-t="s4s">2 a 4 semanas</span></div></li>
+      <li class="st"><span class="n"><svg class="i"><use href="#i-trending-up"/></svg></span><div><b><span class="sn">5</span><span data-t="s5b">Ajustar e ampliar</span></b><span data-t="s5s">se a lista ganhar</span></div></li>
+    </ol>
   </section>
 
   <!-- 5. Parte técnica -->
   <div class="band" id="tecnica">
-    <div class="bi"><svg class="i"><use href="#i-chart"/></svg></div>
+    <div class="bi"><svg class="i"><use href="#i-flask-conical"/></svg></div>
     <div>
       <h2 data-t="band_h">Parte técnica: como foi medido</h2>
       <p data-t="band_p">Daqui para baixo, os detalhes do teste: os 7 jeitos de montar a lista, os números de cada um e visitas reais para você clicar. Se algum termo parecer estranho, o glossário logo abaixo explica.</p>
@@ -534,7 +692,7 @@ footer p{margin:4px 0}
   </div>
 
   <section id="glossario">
-    <h2 data-t="gl_h">Glossário rápido</h2>
+    <h2 class="ih"><svg class="i"><use href="#i-book-open"/></svg><span data-t="gl_h">Glossário rápido</span></h2>
     <p class="sub" data-t="gl_sub">O que quer dizer cada coisa que aparece na parte técnica.</p>
     <dl class="gloss" data-only="pt">
       <div class="card gl"><dt>Visita</dt><dd>Uma ida da pessoa à loja, de quando entra até quando sai. No teste, só contam as visitas que terminaram em compra.</dd></div>
@@ -567,7 +725,7 @@ footer p{margin:4px 0}
   </section>
 
   <section id="comparacao">
-    <h2 data-t="cmp_h">Os 7 jeitos, no mesmo teste</h2>
+    <h2 class="ih"><svg class="i"><use href="#i-chart-column"/></svg><span data-t="cmp_h">Os 7 jeitos, no mesmo teste</span></h2>
     <p class="sub" data-t="cmp_sub"></p>
     <div class="reading"><svg class="i ic"><use href="#i-info"/></svg><p data-t="cmp_ler"></p></div>
     <div class="controls">
@@ -582,7 +740,7 @@ footer p{margin:4px 0}
   </section>
 
   <section id="visita">
-    <h2 data-t="vis_h">Veja uma visita de verdade</h2>
+    <h2 class="ih"><svg class="i"><use href="#i-eye"/></svg><span data-t="vis_h">Veja uma visita de verdade</span></h2>
     <p class="sub" data-t="vis_sub"></p>
     <div class="howto">
       <div><span class="n">1</span><span data-t="how1">Escolha uma visita na lista ou pelas setas.</span></div>
@@ -615,7 +773,7 @@ footer p{margin:4px 0}
   </section>
 
   <section id="como">
-    <h2 data-t="como_h">Como medimos e o que fica de fora</h2>
+    <h2 class="ih"><svg class="i"><use href="#i-flask-conical"/></svg><span data-t="como_h">Como medimos e o que fica de fora</span></h2>
     <p class="sub" data-t="como_sub"></p>
     <div class="grid3" id="como-grid"></div>
   </section>
@@ -624,6 +782,7 @@ footer p{margin:4px 0}
     <p data-t="rodape1"></p>
     <p data-t="rodape2"></p>
   </footer>
+</div>
 </main>
 
 <script id="dados" type="application/json">__DADOS__</script>
@@ -650,6 +809,18 @@ var T = {
   pt:{
     autor:"Rafael Bueno · projeto de portfólio",
     nav1:"Exemplo", nav2:"O que a loja ganha", nav3:"Como fazer", nav4:"Parte técnica",
+    proof_l:"Medido em dados reais", pf1:"com acerto", pf2:"pts na venda nova", pf3:"por pessoa", pf4:"de gasto",
+    g_eye:"Medido em dados reais", g_h:"O que a sua loja ganha",
+    g_sub:"Números do teste com <span data-v=\"casos\"></span> visitas reais que terminaram em compra. Nenhum modelo viu essas visitas antes de ser testado.",
+    g1_tag:"Acerto na lista", g1_t:"das visitas com compra tiveram acerto na lista",
+    g1_p:"Em <span data-v=\"acerto_n\"></span> de cada 100 visitas que terminaram em compra, a pessoa levou pelo menos 1 dos 10 produtos sugeridos.",
+    g2_tag:"Venda nova",
+    g2_p:"nos produtos que a pessoa ainda não tinha visto. Só por usar a busca, o acerto subiu de <span data-v=\"novo_sem\"></span> para <span data-v=\"novo_com\"></span>, quase 3 vezes mais.",
+    mb_sem:"sem busca", mb_com:"com busca",
+    g3_p:"para montar a lista de uma pessoa, num computador comum, sem placa de vídeo. Aparece na hora, enquanto ela navega.",
+    g4_p:"de gasto com ferramenta paga: sem API paga e sem placa de vídeo. O teste inteiro rodou num servidor simples de 2 núcleos.",
+    i_eye:"Na sua loja", i_h:"O que precisa para fazer isso na sua loja",
+    i_sub:"O cliente não instala nada. O modelo lê o que o seu site já registra e devolve uma lista de 10 produtos para cada pessoa.",
     cta1:"Ver um exemplo", cta2:"Ver os números medidos",
     ph_loja:"Sua loja", ph_tit:"Sugestões para você", ph_de:"6 de 10", ph_mais:"e mais 4 sugestões",
     p1n:"Whey 900 g baunilha", p1r:"Você clicou nele na busca por \"whey\"",
@@ -715,6 +886,18 @@ var T = {
   en:{
     autor:"Rafael Bueno · portfolio project",
     nav1:"Example", nav2:"What your store gains", nav3:"How to do it", nav4:"Technical part",
+    proof_l:"Measured on real data", pf1:"with a hit", pf2:"pts on new sales", pf3:"per person", pf4:"spent",
+    g_eye:"Measured on real data", g_h:"What your store gains",
+    g_sub:"Numbers from the test with <span data-v=\"casos\"></span> real visits that ended in a purchase. No model saw these visits before being tested.",
+    g1_tag:"Hit on the list", g1_t:"of visits with a purchase had a hit on the list",
+    g1_p:"In <span data-v=\"acerto_n\"></span> out of every 100 visits that ended in a purchase, the person bought at least 1 of the 10 suggested products.",
+    g2_tag:"New sales",
+    g2_p:"on products the person had not seen yet. Just by using search, the hit rate went from <span data-v=\"novo_sem\"></span> to <span data-v=\"novo_com\"></span>, almost 3 times more.",
+    mb_sem:"without search", mb_com:"with search",
+    g3_p:"to build one person's list, on a regular computer, no graphics card. It shows up right away, while they browse.",
+    g4_p:"spent on paid tools: no paid API and no graphics card. The whole test ran on a simple 2-core server.",
+    i_eye:"In your store", i_h:"What it takes to do this in your store",
+    i_sub:"Customers install nothing. The model reads what your site already records and returns a list of 10 products for each person.",
     cta1:"See an example", cta2:"See the measured numbers",
     ph_loja:"Your store", ph_tit:"Suggestions for you", ph_de:"6 of 10", ph_mais:"and 4 more suggestions",
     p1n:"Whey 900 g vanilla", p1r:"You clicked it in your search for \"whey\"",
@@ -831,6 +1014,13 @@ function valores(){
     casos: inteiro(P.teste.casos.casos)
   };
   document.querySelectorAll("[data-v]").forEach(function(el){ el.textContent = V[el.getAttribute("data-v")]; });
+  var cem = Math.round(h.geral.acerto.media*100), w = "";
+  for (var k = 0; k < 100; k++) w += k < cem ? '<i class="on"></i>' : "<i></i>";
+  document.querySelectorAll(".waffle").forEach(function(el){ el.innerHTML = w; });
+  var maxNovo = Math.max(sb.descoberta.recall.media, h.descoberta.recall.media) || 1;
+  document.querySelectorAll(".mb-bar").forEach(function(el){
+    el.style.height = (100*M[el.getAttribute("data-m")].descoberta.recall.media/maxNovo).toFixed(1) + "%";
+  });
   document.querySelectorAll(".vrow").forEach(function(el){
     var r = M[el.getAttribute("data-m")][el.getAttribute("data-l")].recall.media;
     el.querySelector(".fl").style.width = (100*r).toFixed(1) + "%";
@@ -931,6 +1121,29 @@ document.addEventListener("click", function(ev){
   else if (b.id === "prox") { estado.visita = (estado.visita + 1) % D.visitas.length; visita(); }
 });
 document.getElementById("sel").addEventListener("change", function(e){ estado.visita = +e.target.value; visita(); });
+
+// Cartões com borda que acompanha o mouse (21st: SpotlightCard do uiable/block-feature-32) e brilho do topo (HoverBg do uiable/block-hero).
+document.addEventListener("pointermove", function(e){
+  if (!e.target.closest) return;
+  var c = e.target.closest(".spot");
+  if (c) { var r = c.getBoundingClientRect(); c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px"); }
+  var hs = e.target.closest(".hero-shell");
+  if (hs) { var q = hs.getBoundingClientRect(); hs.style.setProperty("--hx", (e.clientX - q.left) + "px"); hs.style.setProperty("--hy", (e.clientY - q.top) + "px"); }
+}, {passive:true});
+
+// Entrada suave ao rolar (desligada para quem pede menos movimento).
+var reduz = false;
+try { reduz = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch(e) {}
+if (!reduz && "IntersectionObserver" in window) {
+  document.documentElement.classList.add("anim");
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(en){ if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+  }, {rootMargin:"0px 0px -6% 0px"});
+  document.querySelectorAll(".rv").forEach(function(el){ io.observe(el); });
+  document.addEventListener("click", function(ev){
+    if (ev.target.closest && ev.target.closest("[data-lang]")) document.querySelectorAll(".rv").forEach(function(el){ el.classList.add("in"); });
+  });
+}
 tudo();
 })();
 </script>

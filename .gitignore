@@ -8,3 +8,4 @@ __pycache__/
 *.pt
 .env
 *.egg-info/
+.21st/
