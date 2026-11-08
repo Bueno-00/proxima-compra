@@ -10,6 +10,89 @@ recomendar comparados no **mesmo teste, com divisão por data**, numa base públ
 
 ---
 
+## Para quem tem loja ou mercado online
+
+**O problema.** O cliente entra no seu site, olha alguns produtos, pesquisa e muitas vezes vai embora sem levar
+nada, ou leva só o que já veio buscar. Sua loja já registra tudo isso (o que ele viu, pesquisou e comprou), mas
+quase sempre mostra a mesma vitrine para todo mundo.
+
+**O que este projeto faz.** Monta, na hora, uma lista de 10 produtos para cada pessoa, com o motivo de cada um,
+juntando o que ela **viu**, **comprou** e **pesquisou**.
+
+### Um exemplo, passo a passo (ilustrativo)
+
+> A cliente e os produtos deste exemplo são inventados, só para mostrar a ideia. O jeito de escolher e os tipos de
+> motivo são os mesmos que o modelo usa nos dados reais.
+
+1. **Há 2 semanas**, ela comprou bebida proteica sabor chocolate na sua loja. Estava logada, então a compra fica no
+   histórico dela.
+2. **Hoje** ela digita "whey" na busca, clica no Whey 900 g baunilha e abre também uma barra de proteína.
+3. **Em uns 25 milésimos de segundo**, o modelo junta as pistas (o que ela comprou antes, o que viu agora, o que
+   pesquisou e o que outras pessoas com o mesmo caminho compraram), dá uma nota para cada produto e fica com os 10
+   maiores.
+4. **A lista aparece** no carrinho ou na página do produto, cada item com o motivo:
+
+| # | Sugestão | Motivo que aparece para ela | De onde vem a pista |
+|---|---|---|---|
+| 1 | Whey 900 g baunilha | Você clicou nele na busca por "whey" | busca |
+| 2 | Whey 900 g chocolate | Apareceu em 2º na sua busca por "whey" | busca |
+| 3 | Bebida proteica chocolate, 6 un. | Você comprou há 2 semanas | compra anterior |
+| 4 | Bebida proteica morango | Quem comprou a de chocolate também levou esta | quem comprou também levou (item a item) |
+| 5 | Barra de proteína amendoim | Você viu agora há pouco | o que ela viu |
+| 6 | Coqueteleira 600 ml | Costuma ser vista logo depois do whey | sequência (SASRec) |
+
+5. **Ela leva o Whey 900 g chocolate**, que nem tinha aberto. Essa é a venda nova, a que a leitura "só produtos
+   novos" mede, e é onde a busca mais ajudou no teste (de 11,7% para 32,3% de acerto).
+6. **Na semana seguinte**, a bebida de chocolate entra em promoção e ela recebe o aviso por e-mail ou WhatsApp. (No
+   projeto, esta parte roda com preços simulados, porque a base pública não tem preço por dia.)
+
+Por que não mostrar os mais vendidos? Porque são iguais para todo mundo: no teste, a lista dos mais vendidos acertou
+só 0,6% do que as pessoas compraram.
+
+### O que a sua loja ganha (medido)
+
+| | Número | O que quer dizer |
+|---|---|---|
+| Acerto na lista | **84%** | em 84 de cada 100 visitas que terminaram em compra, a pessoa levou pelo menos 1 dos 10 sugeridos |
+| Venda nova | **+20,7 pontos** | nos produtos que ela ainda não tinha visto, usar a busca subiu o acerto de 11,7% para 32,3% |
+| Velocidade | **25 ms** | para montar a lista de uma pessoa num computador comum, sem placa de vídeo |
+| Gasto | **R$ 0** | sem API paga e sem placa de vídeo; o teste inteiro rodou num servidor simples de 2 núcleos |
+
+**De onde vêm os números:** dados públicos de uma loja online europeia, de janeiro a junho de 2016 (Diginetica,
+CIKM Cup 2016), com teste em 3.985 visitas com compra de maio. A loja trocou o nome de cada produto por um número
+antes de liberar os dados; por isso a demonstração mostra "Produto #25911" e não "Whey 900 g chocolate". É um teste
+com o passado: na sua loja os números vão ser outros.
+
+### O que precisa para fazer isso na sua loja
+
+- **Os dados que você já tem:** visitas (quais produtos cada pessoa abriu, e quando), buscas (o que ela digitou, o
+  que a busca mostrou e onde clicou) e compras (de preferência com o cliente logado). Opcional: o preço de cada dia,
+  para o aviso de promoção. A maioria das lojas virtuais já registra isso, na própria plataforma ou numa ferramenta
+  de análise como o Google Analytics. Alguns meses de histórico bastam para começar (aqui foram 4).
+- **Onde a lista aparece:** página do produto ("quem viu este também levou"), carrinho ("antes de pagar, não
+  esqueça"), e-mail ou WhatsApp ("o que você compra entrou em promoção") e página inicial ("escolhidos para você").
+- **Como saber se deu certo (teste A/B):** metade dos clientes, sorteada, vê a lista nova; a outra metade vê a loja
+  como está hoje. Depois de 2 a 4 semanas, você compara vendas por visita, valor médio do pedido e quantas pessoas
+  clicam na lista. Só fica com a lista se ela ganhar.
+
+### Glossário rápido
+
+- **Visita:** uma ida da pessoa à loja, de quando entra até quando sai. No teste, só contam as visitas com compra.
+- **Produto #25911:** o código do produto. A loja trocou os nomes por números antes de liberar os dados.
+- **Busca:** quando a pessoa digita algo ou abre uma categoria. A loja mostra uma lista e ela clica em alguns.
+- **Os 7 jeitos:** 7 maneiras de escolher os 10 produtos, da mais simples (os mais vendidos, iguais para todos) à
+  mais completa (o híbrido com busca).
+- **Híbrido:** junta as sugestões dos jeitos mais simples e um modelo (LightGBM) aprende a melhor ordem. "Com busca"
+  usa também as pistas da busca.
+- **Tudo que comprou:** vale acertar qualquer produto comprado na visita, inclusive os que ela já tinha aberto.
+- **Só produtos novos:** vale só acertar o que ela comprou sem ter visto antes. É a venda nova, a mais difícil.
+- **Recall@10 (acerto):** dos produtos que ela comprou, quantos estavam entre os 10 sugeridos.
+- **Acertou 1+:** a lista teve pelo menos 1 produto que a pessoa comprou naquela visita.
+- **Pontos:** a diferença entre duas porcentagens. De 70,3% para 77,3% são +7,0 pontos.
+- **Intervalo de 95%:** a faixa onde o número verdadeiro deve estar, calculada sorteando as visitas 1.000 vezes.
+
+---
+
 ## A pergunta
 
 A ideia que guiou o projeto: recomendação boa não usa só o que a pessoa comprou, usa também o que ela

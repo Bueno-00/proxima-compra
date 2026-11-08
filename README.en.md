@@ -10,6 +10,89 @@ Seven recommenders compared on **the same time-split test** over public data fro
 
 ---
 
+## For online stores and grocery shops
+
+**The problem.** Customers come to your site, open a few products, search and often leave with nothing, or only with
+what they came for. Your store already records all of this (what they viewed, searched for and bought), but almost
+always shows the same shop window to everyone.
+
+**What this project does.** It builds, on the spot, a list of 10 products for each person, with the reason for each
+one, combining what they **viewed**, **bought** and **searched for**.
+
+### An example, step by step (illustrative)
+
+> The customer and the products in this example are made up, just to show the idea. The way of choosing and the kinds
+> of reasons are the same ones the model uses on the real data.
+
+1. **Two weeks ago** she bought a chocolate protein drink in your store. She was logged in, so the purchase is in her
+   history.
+2. **Today** she types "whey" in the search, clicks the 900 g vanilla whey and also opens a protein bar.
+3. **In about 25 milliseconds** the model puts the clues together (what she bought before, what she viewed now, what
+   she searched for and what other people on the same path bought), scores each product and keeps the top 10.
+4. **The list shows up** in the cart or on the product page, each item with its reason:
+
+| # | Suggestion | Reason she sees | Where the clue comes from |
+|---|---|---|---|
+| 1 | Whey 900 g vanilla | You clicked it in your search for "whey" | search |
+| 2 | Whey 900 g chocolate | Ranked #2 in your search for "whey" | search |
+| 3 | Chocolate protein drink, 6 pack | You bought it 2 weeks ago | earlier purchase |
+| 4 | Strawberry protein drink | People who bought the chocolate one also bought this | bought together (item to item) |
+| 5 | Peanut protein bar | You viewed it a moment ago | what she viewed |
+| 6 | Shaker 600 ml | Usually viewed right after whey | sequence (SASRec) |
+
+5. **She buys the 900 g chocolate whey**, which she never opened. This is the new sale, the one the "new products
+   only" reading measures, and it is where search helped the most in the test (hit rate from 11.7% to 32.3%).
+6. **The following week** the chocolate drink goes on sale and she gets an alert by email or WhatsApp. (In the project
+   this part runs on simulated prices, because the public data has no daily prices.)
+
+Why not just show the best sellers? Because they are the same for everyone: in the test, the best sellers list got
+only 0.6% of what people bought.
+
+### What your store gains (measured)
+
+| | Number | What it means |
+|---|---|---|
+| Hit on the list | **84%** | in 84 out of every 100 visits that ended in a purchase, the person bought at least 1 of the 10 suggested |
+| New sales | **+20.7 points** | on products they had not seen yet, using search raised the hit rate from 11.7% to 32.3% |
+| Speed | **25 ms** | to build one person's list on a regular computer, no graphics card |
+| Cost | **R$ 0** | no paid API and no graphics card; the whole test ran on a simple 2-core server |
+
+**Where the numbers come from:** public data from a European online store, January to June 2016 (Diginetica, CIKM
+Cup 2016), tested on 3,985 visits with a purchase in May. The store replaced each product name with a number before
+releasing the data; that is why the demo shows "Product #25911" and not "Whey 900 g chocolate". It is a test on the
+past: in your store the numbers will differ.
+
+### What it takes to do this in your store
+
+- **The data you already have:** visits (which products each person opened, and when), searches (what they typed,
+  what the search showed and what they clicked) and purchases (ideally with the customer logged in). Optional: each
+  day's price, for the sale alert. Most online stores already record this, in the platform itself or in an analytics
+  tool such as Google Analytics. A few months of history is enough to start (this test used 4).
+- **Where the list shows up:** product page ("people who viewed this also bought"), cart ("before you pay, don't
+  forget"), email or WhatsApp ("what you buy is on sale") and home page ("picked for you").
+- **How to know it worked (A/B test):** a random half of customers sees the new list; the other half sees the store
+  as it is today. After 2 to 4 weeks you compare sales per visit, average order value and how many people click the
+  list. Keep the list only if it wins.
+
+### Quick glossary
+
+- **Visit:** one trip to the store, from arrival to leaving. The test only counts visits with a purchase.
+- **Product #25911:** the product code. The store replaced names with numbers before releasing the data.
+- **Search:** when the person types something or opens a category. The store shows a list and they click some items.
+- **The 7 approaches:** 7 ways to choose the 10 products, from the simplest (best sellers, the same for everyone) to
+  the most complete (the hybrid with search).
+- **Hybrid:** combines the suggestions of the simpler approaches, and a model (LightGBM) learns the best order. "With
+  search" also uses the search clues.
+- **Everything bought:** getting any product bought in the visit right counts, including ones they had already opened.
+- **New products only:** only getting right what they bought without having seen it before counts. This is the new
+  sale, the hardest one.
+- **Recall@10 (hit rate):** of the products they bought, how many were among the 10 suggested.
+- **Hit 1+:** the list had at least 1 product the person bought in that visit.
+- **Points:** the difference between two percentages. From 70.3% to 77.3% is +7.0 points.
+- **95% interval:** the range where the true number should be, computed by resampling the visits 1,000 times.
+
+---
+
 ## The question
 
 The idea behind the project: a good recommender should use not only what the person bought, but also what they

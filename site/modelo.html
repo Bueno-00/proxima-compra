@@ -4,27 +4,34 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Próxima compra</title>
-<meta name="description" content="Recomendação dos 10 próximos produtos com o que a pessoa viu, comprou e pesquisou. Sete modelos medidos no mesmo teste.">
+<meta name="description" content="Para lojas e mercados online: os 10 produtos que cada cliente tem mais chance de comprar, com o motivo de cada um, usando o que a pessoa viu, comprou e pesquisou. Sete jeitos medidos no mesmo teste.">
 <style>
 :root{
   --bg:#f5f6f8; --card:#ffffff; --text:#14181d; --text2:#3b434d; --muted:#67707c; --line:#e1e4e9; --line2:#eef0f3;
   --accent:#1f4e79; --accent2:#2f6aa3; --accent-soft:#e7eff8; --bar:#9aa3ae; --bar-soft:#eceef1;
   --ok:#17714a; --ok-soft:#e3f3ea; --new:#7a4b00; --new-soft:#fbf0dc; --focus:#2f6aa3;
+  --frame:#1b2028; --on-accent:#ffffff; --shadow:0 24px 60px -28px rgba(15,30,50,.35);
+  --tc:#f1e6da; --tcf:#7a4520; --tv:#f7f0d8; --tvf:#7a6100; --ts:#f9e3e6; --tsf:#9b2c3e;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0f1216; --card:#171b21; --text:#eef1f4; --text2:#c3cad3; --muted:#8e98a5; --line:#29303a; --line2:#20262e;
     --accent:#8bbcec; --accent2:#a9cdf1; --accent-soft:#1a2836; --bar:#5d6773; --bar-soft:#232a33;
     --ok:#6fd3a0; --ok-soft:#15281e; --new:#f0c062; --new-soft:#2b2312; --focus:#8bbcec;
+    --frame:#323a46; --on-accent:#0b1520; --shadow:0 24px 60px -28px rgba(0,0,0,.7);
+    --tc:#2c221a; --tcf:#e0b98f; --tv:#2b2716; --tvf:#e5d27e; --ts:#2f1b20; --tsf:#f0a1ae;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0f1216; --card:#171b21; --text:#eef1f4; --text2:#c3cad3; --muted:#8e98a5; --line:#29303a; --line2:#20262e;
   --accent:#8bbcec; --accent2:#a9cdf1; --accent-soft:#1a2836; --bar:#5d6773; --bar-soft:#232a33;
   --ok:#6fd3a0; --ok-soft:#15281e; --new:#f0c062; --new-soft:#2b2312; --focus:#8bbcec;
+  --frame:#323a46; --on-accent:#0b1520; --shadow:0 24px 60px -28px rgba(0,0,0,.7);
+  --tc:#2c221a; --tcf:#e0b98f; --tv:#2b2716; --tvf:#e5d27e; --ts:#2f1b20; --tsf:#f0a1ae;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 a{color:var(--accent);text-underline-offset:2px}
 button{font:inherit;color:inherit}
@@ -32,34 +39,162 @@ button{font:inherit;color:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
 @media (max-width:640px){.wrap{padding:0 16px}}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* idioma: blocos escritos nas duas línguas */
+:root[lang="en"] [data-only="pt"], :root:not([lang="en"]) [data-only="en"]{display:none!important}
 /* topo */
 header.top{border-bottom:1px solid var(--line);background:var(--card)}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
-.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0}
 .brand b{font-size:17px;letter-spacing:-.01em}
 .brand span{color:var(--muted);font-size:13px}
+.topnav{display:flex;gap:20px;font-size:13.5px;font-weight:600}
+.topnav a{color:var(--text2);text-decoration:none}
+.topnav a:hover{color:var(--accent)}
+@media (max-width:1040px){.topnav{display:none}}
 .top-actions{display:flex;gap:8px;align-items:center}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--card)}
 .seg button{border:0;background:transparent;padding:6px 11px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2)}
-.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#0b1520}}
-:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#0b1520}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
 .gh{font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:6px 11px}
-/* abertura */
-.hero{padding:36px 0 8px}
-.hero h1{font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px;max-width:980px}
-.hero p{color:var(--text2);font-size:17px;max-width:820px;margin:0}
-@media (max-width:640px){.hero{padding:22px 0 4px}.hero h1{font-size:25px}.hero p{font-size:15px}}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0 8px}
-@media (max-width:900px){.kpis{grid-template-columns:1fr 1fr}}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
-.kpi .v{font-size:28px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.kpi .l{color:var(--text2);font-size:13px;line-height:1.35;margin-top:2px}
-@media (max-width:640px){.kpi .v{font-size:23px}}
-section{padding:26px 0 6px}
+@media (max-width:400px){.brand span{display:none}}
+/* títulos de seção */
+section{padding:26px 0 6px;scroll-margin-top:12px}
+section.lg{padding:56px 0 8px}
+@media (max-width:640px){section.lg{padding:36px 0 6px}}
 h2{font-size:22px;letter-spacing:-.01em;margin:0 0 4px}
+section.lg h2{font-size:28px;letter-spacing:-.02em;line-height:1.2;margin-bottom:8px}
+@media (max-width:640px){section.lg h2{font-size:23px}}
 .sub{color:var(--muted);margin:0 0 14px;max-width:860px}
+section.lg .sub{font-size:16px;color:var(--text2);margin-bottom:22px}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:4px 10px;margin:0 0 12px}
+.eyebrow.warn{color:var(--new);background:var(--new-soft)}
+.eyebrow.ok{color:var(--ok);background:var(--ok-soft)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+/* abertura para a loja */
+.hero2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:44px;align-items:center;padding:48px 0 12px}
+.hero2 h1{font-size:37px;line-height:1.13;letter-spacing:-.025em;margin:0 0 16px;text-wrap:balance}
+.hero2 .lead{font-size:18px;color:var(--text2);margin:0 0 24px;max-width:640px}
+.ctas{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 16px;font-weight:700;font-size:14.5px;text-decoration:none;border:1px solid var(--accent)}
+.btn.pri{background:var(--accent);color:var(--on-accent)}
+.btn.sec{background:var(--card);color:var(--accent)}
+.btn svg.i{width:18px;height:18px}
+@media (max-width:900px){.hero2{grid-template-columns:1fr;gap:26px}}
+@media (max-width:640px){.hero2{padding:26px 0 4px}.hero2 h1{font-size:28px}.hero2 .lead{font-size:16px}}
+.journey{padding:20px 22px;box-shadow:var(--shadow)}
+.journey .jt{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.jstep{display:grid;grid-template-columns:42px minmax(0,1fr);gap:14px;position:relative;padding:10px 0}
+.jstep .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--bar-soft);color:var(--text2);position:relative;z-index:1}
+.jstep:not(:last-child)::after{content:"";position:absolute;left:20px;top:54px;bottom:-8px;border-left:2px dashed var(--line)}
+.jstep b{display:block;font-size:15px}
+.jstep p{margin:2px 0 0;color:var(--text2);font-size:14px}
+.jstep.lost .ic{background:var(--new-soft);color:var(--new)}
+.jstep.win{margin-top:6px}
+.jstep.win .ic{background:var(--accent);color:var(--on-accent)}
+.jstep.win b{color:var(--accent)}
+/* exemplo */
+.ex{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:start}
+@media (max-width:980px){.ex{grid-template-columns:1fr;gap:28px}}
+.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:16px;padding:0 0 22px;position:relative}
+.steps li::before{counter-increment:s;content:counter(s);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--card);border:2px solid var(--accent2);color:var(--accent);position:relative;z-index:1}
+.steps li:not(:last-child)::after{content:"";position:absolute;left:18px;top:40px;bottom:0;width:2px;background:var(--line)}
+.steps li.star::before{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
+.steps .when{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.steps b{display:block;font-size:17px;margin:1px 0 4px;letter-spacing:-.01em}
+.steps p{margin:0;color:var(--text2)}
+.steps p b{display:inline;font-size:inherit;margin:0;letter-spacing:0;color:var(--text)}
+.q{font-weight:700;color:var(--text)}
+.why-not{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-top:4px}
+.why-not .ic{color:var(--new)}
+.why-not p{margin:0;color:var(--text2);font-size:14.5px}
+.phone-col{position:sticky;top:20px}
+@media (max-width:980px){.phone-col{position:static}}
+.phone{max-width:360px;margin:0 auto;border:9px solid var(--frame);border-radius:40px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+.phone .notch{width:96px;height:20px;background:var(--frame);border-radius:0 0 13px 13px;margin:0 auto}
+.phone .status{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;padding:0 20px;margin-top:-16px;color:var(--text2)}
+.shop-h{padding:14px 16px 12px;border-bottom:1px solid var(--line2)}
+.shop-h .store{font-weight:800;font-size:15px}
+.searchbox{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:13.5px;color:var(--text);margin-top:8px;background:var(--bg)}
+.searchbox svg.i{width:16px;height:16px;color:var(--muted)}
+.plist-h{display:flex;justify-content:space-between;align-items:baseline;padding:12px 16px 6px;font-weight:800;font-size:14px}
+.plist-h span{font-size:11.5px;font-weight:700;color:var(--muted)}
+.prow{display:grid;grid-template-columns:44px minmax(0,1fr);gap:11px;padding:9px 16px;border-top:1px solid var(--line2);align-items:center}
+.thumb{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:var(--bar-soft);color:var(--text2)}
+.thumb.c{background:var(--tc);color:var(--tcf)} .thumb.v{background:var(--tv);color:var(--tvf)} .thumb.s{background:var(--ts);color:var(--tsf)}
+.prow .nm{font-weight:700;font-size:13.5px;line-height:1.25}
+.prow .rs{font-size:12.5px;color:var(--text2);line-height:1.3;margin-top:2px}
+.sig{display:inline-block;font-size:10.5px;font-weight:800;border-radius:5px;padding:1px 6px;margin-top:5px;background:var(--bar-soft);color:var(--text2);letter-spacing:.02em}
+.sig.s{background:var(--accent-soft);color:var(--accent)}
+.prow.bought{background:var(--ok-soft)}
+.prow.bought .nm::after{content:attr(data-flag);font-size:10.5px;font-weight:800;color:var(--ok);border:1px solid var(--ok);border-radius:5px;padding:0 5px;margin-left:6px;vertical-align:1px}
+.phone .more{padding:10px 16px 16px;font-size:12.5px;color:var(--muted);text-align:center;border-top:1px solid var(--line2)}
+.phone-cap{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted);max-width:360px;margin:14px auto 0}
+.phone-cap i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+/* o que a loja ganha */
+.gains{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1020px){.gains{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.gains{grid-template-columns:1fr}}
+.gain{padding:20px 20px 18px}
+.gain .v{font-size:38px;font-weight:800;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.05}
+.gain .t{font-weight:700;margin:8px 0 6px;font-size:15px;line-height:1.35}
+.gain p{margin:0;color:var(--text2);font-size:14px}
+.gain .v small{font-size:19px;font-weight:700;letter-spacing:0;margin-left:5px}
+@media (max-width:640px){.gain .v{font-size:32px}}
+.duo{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:14px;margin-top:14px}
+@media (max-width:900px){.duo{grid-template-columns:1fr}}
+.vs{padding:20px}
+.vs h3,.srcbox h3{font-size:16px;margin:0 0 4px}
+.vs .grp{margin-top:14px}
+.vs .gt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px}
+.vrow{display:grid;grid-template-columns:minmax(0,270px) minmax(0,1fr) 58px;gap:12px;align-items:center;padding:4px 0;font-size:14px}
+.vrow .nm{color:var(--text2)}
+.vrow .trk{height:12px;border-radius:6px;background:var(--bar-soft);overflow:hidden}
+.vrow .fl{height:100%;border-radius:6px;background:var(--bar);min-width:3px}
+.vrow.b .fl{background:var(--accent2)}
+.vrow.b .nm{color:var(--text);font-weight:700}
+.vrow .vv{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+@media (max-width:560px){.vrow{grid-template-columns:minmax(0,1fr) 52px}.vrow .nm{grid-column:1 / -1}.vrow .trk{grid-column:1}}
+.srcbox{padding:20px;border-left:3px solid var(--new);border-radius:0 14px 14px 0}
+.srcbox p{margin:6px 0 0;color:var(--text2);font-size:14px}
+/* como fazer na loja */
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.grid3{grid-template-columns:1fr}}
+.how{padding:20px}
+.how .hi{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);margin-bottom:12px}
+.how h3{font-size:16px;margin:0 0 8px}
+.how ul{margin:0;padding-left:18px;color:var(--text2);font-size:14px}
+.how li{margin:5px 0}
+.how p{color:var(--text2);font-size:14px;margin:8px 0 0}
+.how .foot{color:var(--muted);font-size:13px;border-top:1px dashed var(--line);padding-top:10px;margin-top:12px}
+.stepper{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:14px;padding:22px 16px 18px}
+.stepper .st{position:relative;text-align:center;padding:0 8px}
+.stepper .n{width:36px;height:36px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;font-weight:800;background:var(--accent-soft);color:var(--accent);position:relative;z-index:1}
+.stepper .st:not(:last-child)::after{content:"";position:absolute;top:18px;left:calc(50% + 22px);right:calc(-50% + 22px);height:2px;background:var(--line)}
+.stepper b{display:block;font-size:14px;line-height:1.3}
+.stepper span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+@media (max-width:820px){
+  .stepper{grid-template-columns:1fr;gap:14px;padding:16px}
+  .stepper .st{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;text-align:left;padding:0}
+  .stepper .n{margin:0}
+  .stepper .st:not(:last-child)::after{display:none}
+}
+/* faixa da parte técnica */
+.band{margin-top:64px;padding:26px 28px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;background:var(--accent-soft);border:1px solid var(--line);border-radius:16px}
+.band .bi{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--card);color:var(--accent)}
+.band .bi svg.i{width:26px;height:26px}
+.band h2{font-size:24px;margin:0 0 4px}
+.band p{margin:0;color:var(--text2);max-width:880px}
+@media (max-width:640px){.band{grid-template-columns:1fr;padding:20px;margin-top:44px}}
+/* glossário */
+.gloss{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
+@media (max-width:1020px){.gloss{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.gloss{grid-template-columns:1fr}}
+.gl{padding:14px 16px}
+.gl dt{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.gl dd{margin:0;color:var(--text2);font-size:14px}
+@media (max-width:640px){.gloss{gap:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}.gloss .gl{border:0;border-radius:0;border-bottom:1px solid var(--line2)}.gloss .gl:last-child{border-bottom:0}}
 /* tabela de resultados */
 .tbl-wrap{overflow-x:auto}
 table.res{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:760px}
@@ -91,12 +226,22 @@ table.res tr.best td{background:var(--accent-soft)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 .callout{border-left:3px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;padding:12px 16px;margin:14px 0 0;color:var(--text2)}
 .callout b{color:var(--text)}
+.reading{display:flex;gap:10px;align-items:flex-start;color:var(--text2);font-size:14px;margin:0 0 14px;max-width:960px}
+.reading .ic{color:var(--accent);margin-top:1px}
+.reading p{margin:0}
 /* explorador */
 .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .controls select{font:inherit;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--text);max-width:100%}
 .nav{display:flex;gap:8px;align-items:center;min-width:0}
 @media (max-width:640px){.nav{width:100%}.nav select{flex:1;min-width:0}}
 .iconbtn{border:1px solid var(--line);background:var(--card);border-radius:9px;padding:7px 11px;cursor:pointer;font-weight:600}
+.howto{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 10px}
+@media (max-width:900px){.howto{grid-template-columns:1fr}}
+.howto div{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--text2);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.howto .n{flex:0 0 24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:12px;display:grid;place-items:center}
+.keys{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:13px;color:var(--muted);margin:0 0 14px}
+.keys .k2{display:inline-flex;align-items:center;gap:6px}
+.keys .tiny{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:1px 6px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
 .chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2)}
 .chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
@@ -133,8 +278,6 @@ ol.recs li.hit{background:linear-gradient(90deg,var(--ok-soft),transparent 70%)}
 .promo .row:last-child{border-bottom:0}
 .sim{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:var(--new-soft);color:var(--new);border-radius:6px;padding:2px 7px;margin-left:8px;vertical-align:2px}
 /* como medimos */
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media (max-width:900px){.grid3{grid-template-columns:1fr}}
 .box{padding:14px 16px}
 .box h3{font-size:15px;margin:0 0 6px}
 .box p,.box li{color:var(--text2);font-size:14px}
@@ -146,9 +289,33 @@ footer p{margin:4px 0}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></symbol>
+  <symbol id="i-exit" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></symbol>
+  <symbol id="i-tub" viewBox="0 0 24 24"><path d="M6 9h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M5 5.5h14V9H5z"/><path d="M9.5 14h5"/></symbol>
+  <symbol id="i-bottle" viewBox="0 0 24 24"><path d="M10 2.5h4V6l2 3v11a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 8 20V9l2-3z"/><path d="M8 13h8"/></symbol>
+  <symbol id="i-bar" viewBox="0 0 24 24"><rect x="2.5" y="8.5" width="19" height="7" rx="2"/><path d="M8 8.5v7M14 8.5v7"/></symbol>
+  <symbol id="i-shaker" viewBox="0 0 24 24"><path d="M6.5 8h11l-1.6 12.2a1.5 1.5 0 0 1-1.5 1.3H9.6a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M8 3.5h8V8H8z"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+  <symbol id="i-layout" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M10 9v11"/></symbol>
+  <symbol id="i-ab" viewBox="0 0 24 24"><path d="M12 3v18"/><rect x="3" y="6" width="6" height="12" rx="1.5"/><rect x="15" y="6" width="6" height="12" rx="1.5"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4.5M12 17.5v.5"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></symbol>
+</svg>
+
 <header class="top">
   <div class="wrap">
     <div class="brand"><b>Próxima compra</b><span data-t="autor">Rafael Bueno · projeto de portfólio</span></div>
+    <nav class="topnav" aria-label="Seções">
+      <a href="#exemplo" data-t="nav1">Exemplo</a>
+      <a href="#ganho" data-t="nav2">O que a loja ganha</a>
+      <a href="#implementar" data-t="nav3">Como fazer</a>
+      <a href="#tecnica" data-t="nav4">Parte técnica</a>
+    </nav>
     <div class="top-actions">
       <div class="seg" role="group" aria-label="Idioma / Language">
         <button type="button" data-lang="pt" aria-pressed="true">PT</button>
@@ -160,15 +327,248 @@ footer p{margin:4px 0}
 </header>
 
 <main class="wrap">
-  <div class="hero">
-    <h1 data-t="h1">Os 10 produtos que a pessoa vai comprar, com o porquê</h1>
-    <p data-t="lead"></p>
+  <!-- 1. Para a loja -->
+  <div class="hero2" id="loja">
+    <div>
+      <div data-only="pt">
+        <p class="eyebrow">Para quem tem loja ou mercado online</p>
+        <h1>Mostre a cada cliente os 10 produtos que ele tem mais chance de comprar, e diga por quê</h1>
+        <p class="lead">O cliente entra no seu site, olha, pesquisa e muitas vezes vai embora sem levar nada, ou leva só o que já veio buscar. Este projeto usa o que a sua loja já registra (o que a pessoa <b>viu</b>, <b>comprou</b> e <b>pesquisou</b>) para montar, na hora, uma lista de 10 sugestões para cada pessoa, com o motivo de cada uma.</p>
+      </div>
+      <div data-only="en">
+        <p class="eyebrow">For online stores and grocery shops</p>
+        <h1>Show each customer the 10 products they are most likely to buy, and say why</h1>
+        <p class="lead">Customers come to your site, browse, search and often leave with nothing, or only with what they came for. This project uses what your store already records (what the person <b>viewed</b>, <b>bought</b> and <b>searched for</b>) to build, on the spot, a list of 10 suggestions for each person, with the reason for each one.</p>
+      </div>
+      <div class="ctas">
+        <a class="btn pri" href="#exemplo"><svg class="i"><use href="#i-down"/></svg><span data-t="cta1">Ver um exemplo</span></a>
+        <a class="btn sec" href="#ganho"><svg class="i"><use href="#i-chart"/></svg><span data-t="cta2">Ver os números medidos</span></a>
+      </div>
+    </div>
+    <div class="card journey">
+      <div data-only="pt">
+        <p class="jt">O que acontece hoje na maioria das lojas</p>
+        <div class="jstep"><div class="ic"><svg class="i"><use href="#i-eye"/></svg></div><div><b>Ele entra e olha</b><p>Abre 5, 10 produtos. Cada clique já fica registrado no seu site.</p></div></div>
+        <div class="jstep"><div class="ic"><svg class="i"><use href="#i-search"/></svg></div><div><b>Ele pesquisa</b><p>Digita "whey" ou abre uma categoria. A busca diz o que ele quer agora.</p></div></div>
+        <div class="jstep lost"><div class="ic"><svg class="i"><use href="#i-exit"/></svg></div><div><b>Ele vai embora</b><p>Se o que ele quer não aparece na frente dele, a venda fica para outra loja.</p></div></div>
+        <div class="jstep win"><div class="ic"><svg class="i"><use href="#i-list"/></svg></div><div><b>Com a lista certa</b><p>10 produtos escolhidos para ele, com o motivo, na página do produto, no carrinho ou numa mensagem depois.</p></div></div>
+      </div>
+      <div data-only="en">
+        <p class="jt">What happens today in most stores</p>
+        <div class="jstep"><div class="ic"><svg class="i"><use href="#i-eye"/></svg></div><div><b>They come in and browse</b><p>They open 5 or 10 products. Every click is already recorded by your site.</p></div></div>
+        <div class="jstep"><div class="ic"><svg class="i"><use href="#i-search"/></svg></div><div><b>They search</b><p>They type "whey" or open a category. The search says what they want right now.</p></div></div>
+        <div class="jstep lost"><div class="ic"><svg class="i"><use href="#i-exit"/></svg></div><div><b>They leave</b><p>If what they want is not in front of them, the sale goes to another store.</p></div></div>
+        <div class="jstep win"><div class="ic"><svg class="i"><use href="#i-list"/></svg></div><div><b>With the right list</b><p>10 products picked for them, with the reason, on the product page, in the cart or in a message later.</p></div></div>
+      </div>
+    </div>
   </div>
-  <div class="kpis" id="kpis"></div>
+
+  <!-- 2. Exemplo ilustrativo -->
+  <section class="lg" id="exemplo">
+    <div data-only="pt">
+      <p class="eyebrow warn">Exemplo ilustrativo</p>
+      <h2>Um exemplo, passo a passo: a cliente que pesquisou "whey"</h2>
+      <p class="sub">A cliente e os produtos abaixo são inventados, só para mostrar a ideia. O jeito de escolher e os tipos de motivo são os mesmos que o modelo usa nos dados reais (veja uma visita de verdade mais abaixo).</p>
+    </div>
+    <div data-only="en">
+      <p class="eyebrow warn">Illustrative example</p>
+      <h2>An example, step by step: the customer who searched for "whey"</h2>
+      <p class="sub">The customer and the products below are made up, just to show the idea. The way of choosing and the kinds of reasons are the same ones the model uses on the real data (see a real visit further down).</p>
+    </div>
+    <div class="ex">
+      <div>
+        <ol class="steps" data-only="pt">
+          <li><div><span class="when">Há 2 semanas</span><b>Ela compra bebida proteica sabor chocolate</b><p>Como estava logada na sua loja, a compra fica guardada no histórico dela.</p></div></li>
+          <li><div><span class="when">Hoje</span><b>Ela digita <span class="q">"whey"</span> na busca</b><p>A busca mostra 40 produtos. Ela clica no Whey 900 g baunilha e abre também uma barra de proteína.</p></div></li>
+          <li><div><span class="when">Em 25 milésimos de segundo</span><b>O modelo junta as pistas</b><p>Ele olha o que ela comprou antes, o que viu agora, o que pesquisou e o que outras pessoas com o mesmo caminho compraram. Dá uma nota para cada produto e fica com os 10 maiores.</p></div></li>
+          <li><div><span class="when">Na tela dela</span><b>A lista aparece com o motivo</b><p>No carrinho ou na página do produto, cada sugestão diz por que está ali (veja a tela do celular). O motivo ajuda ela a entender a sugestão e ajuda você a conferir se o modelo faz sentido.</p></div></li>
+          <li class="star"><div><span class="when">A venda nova</span><b>Ela leva o Whey 900 g chocolate, que nem tinha aberto</b><p>Esse é o produto que ela não tinha visto. É a venda que a parte "só produtos novos" mede, e foi onde a busca mais ajudou no teste: o acerto subiu de <b data-v="novo_sem"></b> para <b data-v="novo_com"></b>.</p></div></li>
+          <li><div><span class="when">Na semana seguinte</span><b>"O que você costuma comprar está mais barato"</b><p>A bebida de chocolate entra em promoção e ela recebe o aviso por e-mail ou WhatsApp. (No projeto, esta parte roda com preços simulados, porque a base pública não tem preço por dia.)</p></div></li>
+        </ol>
+        <ol class="steps" data-only="en">
+          <li><div><span class="when">2 weeks ago</span><b>She buys a chocolate protein drink</b><p>She was logged in to your store, so the purchase is saved in her history.</p></div></li>
+          <li><div><span class="when">Today</span><b>She types <span class="q">"whey"</span> in the search</b><p>The search shows 40 products. She clicks the 900 g vanilla whey and also opens a protein bar.</p></div></li>
+          <li><div><span class="when">In 25 milliseconds</span><b>The model puts the clues together</b><p>It looks at what she bought before, what she viewed now, what she searched for and what other people on the same path bought. It scores each product and keeps the top 10.</p></div></li>
+          <li><div><span class="when">On her screen</span><b>The list shows up with the reason</b><p>In the cart or on the product page, each suggestion says why it is there (see the phone screen). The reason helps her understand the suggestion and helps you check that the model makes sense.</p></div></li>
+          <li class="star"><div><span class="when">The new sale</span><b>She buys the 900 g chocolate whey, which she never opened</b><p>This is the product she had not seen. It is the sale that "new products only" measures, and it is where search helped the most in the test: hit rate went from <b data-v="novo_sem"></b> to <b data-v="novo_com"></b>.</p></div></li>
+          <li><div><span class="when">The following week</span><b>"What you usually buy is cheaper now"</b><p>The chocolate drink goes on sale and she gets the alert by email or WhatsApp. (In the project this part runs on simulated prices, because the public data has no daily prices.)</p></div></li>
+        </ol>
+        <div class="card why-not">
+          <svg class="i ic"><use href="#i-alert"/></svg>
+          <p data-only="pt"><b>Por que não mostrar os mais vendidos?</b> Porque são iguais para todo mundo. No teste, a lista dos mais vendidos acertou só <b data-v="pop"></b> do que as pessoas compraram. Ela não quer o arroz mais vendido da loja, ela quer whey.</p>
+          <p data-only="en"><b>Why not just show the best sellers?</b> Because they are the same for everyone. In the test, the best sellers list got only <b data-v="pop"></b> of what people bought. She does not want the store's best selling rice, she wants whey.</p>
+        </div>
+      </div>
+
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="status"><span>9:41</span><span>5G</span></div>
+          <div class="shop-h">
+            <div class="store" data-t="ph_loja">Sua loja</div>
+            <div class="searchbox"><svg class="i"><use href="#i-search"/></svg>whey</div>
+          </div>
+          <div class="plist-h"><b data-t="ph_tit">Sugestões para você</b><span data-t="ph_de">6 de 10</span></div>
+          <div class="prow"><div class="thumb v"><svg class="i"><use href="#i-tub"/></svg></div><div><div class="nm" data-t="p1n">Whey 900 g baunilha</div><div class="rs" data-t="p1r">Você clicou nele na busca por "whey"</div><span class="sig s" data-t="sig_busca">busca</span></div></div>
+          <div class="prow bought"><div class="thumb c"><svg class="i"><use href="#i-tub"/></svg></div><div><div class="nm" data-t="p2n" data-flag="comprou">Whey 900 g chocolate</div><div class="rs" data-t="p2r">Apareceu em 2º na sua busca por "whey"</div><span class="sig s" data-t="sig_busca">busca</span></div></div>
+          <div class="prow"><div class="thumb c"><svg class="i"><use href="#i-bottle"/></svg></div><div><div class="nm" data-t="p3n">Bebida proteica chocolate, 6 un.</div><div class="rs" data-t="p3r">Você comprou há 2 semanas</div><span class="sig" data-t="sig_comprou">comprou antes</span></div></div>
+          <div class="prow"><div class="thumb s"><svg class="i"><use href="#i-bottle"/></svg></div><div><div class="nm" data-t="p4n">Bebida proteica morango</div><div class="rs" data-t="p4r">Quem comprou a de chocolate também levou esta</div><span class="sig" data-t="sig_junto">quem comprou também levou</span></div></div>
+          <div class="prow"><div class="thumb"><svg class="i"><use href="#i-bar"/></svg></div><div><div class="nm" data-t="p5n">Barra de proteína amendoim</div><div class="rs" data-t="p5r">Você viu agora há pouco</div><span class="sig" data-t="sig_viu">o que você viu</span></div></div>
+          <div class="prow"><div class="thumb"><svg class="i"><use href="#i-shaker"/></svg></div><div><div class="nm" data-t="p6n">Coqueteleira 600 ml</div><div class="rs" data-t="p6r">Costuma ser vista logo depois do whey</div><span class="sig" data-t="sig_seq">sequência</span></div></div>
+          <div class="more" data-t="ph_mais">e mais 4 sugestões</div>
+        </div>
+        <div class="phone-cap">
+          <span><i style="background:var(--accent2)"></i><span data-t="cap1">Etiqueta azul: a pista veio da busca, a parte que este projeto mediu.</span></span>
+          <span><i style="background:var(--ok)"></i><span data-t="cap2">Fundo verde: o que ela comprou no fim.</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. O que a loja ganha -->
+  <section class="lg" id="ganho">
+    <div data-only="pt">
+      <p class="eyebrow ok">Medido em dados reais</p>
+      <h2>O que a sua loja ganha</h2>
+      <p class="sub">Números do teste com <span data-v="casos"></span> visitas reais que terminaram em compra. Nenhum modelo viu essas visitas antes de ser testado.</p>
+    </div>
+    <div data-only="en">
+      <p class="eyebrow ok">Measured on real data</p>
+      <h2>What your store gains</h2>
+      <p class="sub">Numbers from the test with <span data-v="casos"></span> real visits that ended in a purchase. No model saw these visits before being tested.</p>
+    </div>
+    <div class="gains">
+      <div class="card gain"><div class="v" data-v="acerto"></div>
+        <div data-only="pt"><div class="t">das visitas com compra tiveram acerto na lista</div><p>Em <span data-v="acerto_n"></span> de cada 100 visitas que terminaram em compra, a pessoa levou pelo menos 1 dos 10 produtos sugeridos.</p></div>
+        <div data-only="en"><div class="t">of visits with a purchase had a hit on the list</div><p>In <span data-v="acerto_n"></span> out of every 100 visits that ended in a purchase, the person bought at least 1 of the 10 suggested products.</p></div>
+      </div>
+      <div class="card gain"><div class="v"><span data-v="dd"></span><small data-t="pts_curto">pontos</small></div>
+        <div data-only="pt"><div class="t">nos produtos que a pessoa ainda não tinha visto</div><p>Só por usar a busca, o acerto da venda nova subiu de <span data-v="novo_sem"></span> para <span data-v="novo_com"></span>, quase 3 vezes mais.</p></div>
+        <div data-only="en"><div class="t">on products the person had not seen yet</div><p>Just by using search, the hit rate on new sales went from <span data-v="novo_sem"></span> to <span data-v="novo_com"></span>, almost 3 times more.</p></div>
+      </div>
+      <div class="card gain"><div class="v" data-v="lat"></div>
+        <div data-only="pt"><div class="t">para montar a lista de uma pessoa</div><p>Num computador comum, sem placa de vídeo. Rápido o bastante para a lista aparecer na hora, enquanto ela navega.</p></div>
+        <div data-only="en"><div class="t">to build one person's list</div><p>On a regular computer, no graphics card. Fast enough for the list to show up right away, while they browse.</p></div>
+      </div>
+      <div class="card gain"><div class="v">R$ 0</div>
+        <div data-only="pt"><div class="t">de gasto com ferramenta paga</div><p>Sem API paga e sem placa de vídeo. O teste inteiro rodou num servidor simples de 2 núcleos.</p></div>
+        <div data-only="en"><div class="t">spent on paid tools</div><p>No paid API and no graphics card. The whole test ran on a simple 2-core server.</p></div>
+      </div>
+    </div>
+    <div class="duo">
+      <div class="card vs">
+        <h3 data-t="vs_h">A lista feita para cada pessoa contra a lista igual para todos</h3>
+        <div class="grp">
+          <div class="gt" data-t="vs_g1">Acerto contando tudo que a pessoa comprou</div>
+          <div class="vrow" data-m="popularidade" data-l="geral"><div class="nm" data-t="vs_pop">Mais vendidos (igual para todos)</div><div class="trk"><div class="fl"></div></div><div class="vv"></div></div>
+          <div class="vrow" data-m="visto" data-l="geral"><div class="nm" data-t="vs_rep">Repetir o que ela já viu</div><div class="trk"><div class="fl"></div></div><div class="vv"></div></div>
+          <div class="vrow b" data-m="hibrido_com_busca" data-l="geral"><div class="nm" data-t="vs_hib">Lista para cada pessoa, com busca</div><div class="trk"><div class="fl"></div></div><div class="vv"></div></div>
+        </div>
+        <div class="grp">
+          <div class="gt" data-t="vs_g2">Acerto só nos produtos que ela não tinha visto (a venda nova)</div>
+          <div class="vrow" data-m="visto" data-l="descoberta"><div class="nm" data-t="vs_rep">Repetir o que ela já viu</div><div class="trk"><div class="fl"></div></div><div class="vv"></div></div>
+          <div class="vrow" data-m="hibrido_sem_busca" data-l="descoberta"><div class="nm" data-t="vs_sem">Lista para cada pessoa, sem busca</div><div class="trk"><div class="fl"></div></div><div class="vv"></div></div>
+          <div class="vrow b" data-m="hibrido_com_busca" data-l="descoberta"><div class="nm" data-t="vs_hib">Lista para cada pessoa, com busca</div><div class="trk"><div class="fl"></div></div><div class="vv"></div></div>
+        </div>
+        <p class="note" data-t="vs_nota">Mostrar de novo o que a pessoa já viu acerta muito, mas quase não traz venda nova. O que traz venda nova é a busca.</p>
+      </div>
+      <div class="card srcbox">
+        <h3 data-t="src_h">De onde vêm esses números</h3>
+        <div data-only="pt">
+          <p>Dados públicos de uma loja online europeia, de janeiro a junho de 2016, liberados para pesquisa na competição CIKM Cup 2016 (Diginetica). O teste usa as visitas com compra de maio.</p>
+          <p>A loja trocou o nome de cada produto por um número antes de liberar os dados. Por isso, na parte técnica, você vê "Produto #25911" e não "Whey 900 g chocolate".</p>
+          <p>É um teste com o passado. Na sua loja os números vão ser outros; o jeito certo de saber é o teste A/B (logo abaixo).</p>
+        </div>
+        <div data-only="en">
+          <p>Public data from a European online store, January to June 2016, released for research in the CIKM Cup 2016 competition (Diginetica). The test uses May's visits with a purchase.</p>
+          <p>The store replaced each product name with a number before releasing the data. That is why the technical part shows "Product #25911" and not "Whey 900 g chocolate".</p>
+          <p>It is a test on the past. In your store the numbers will differ; the right way to find out is an A/B test (right below).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Como fazer na loja -->
+  <section class="lg" id="implementar">
+    <div data-only="pt">
+      <p class="eyebrow">Na sua loja</p>
+      <h2>O que precisa para fazer isso na sua loja</h2>
+      <p class="sub">O cliente não instala nada. O modelo lê o que o seu site já registra e devolve uma lista de 10 produtos para cada pessoa.</p>
+    </div>
+    <div data-only="en">
+      <p class="eyebrow">In your store</p>
+      <h2>What it takes to do this in your store</h2>
+      <p class="sub">Customers install nothing. The model reads what your site already records and returns a list of 10 products for each person.</p>
+    </div>
+    <div class="grid3">
+      <div class="card how"><div class="hi"><svg class="i"><use href="#i-db"/></svg></div>
+        <div data-only="pt"><h3>1. Os dados que você já tem</h3><ul><li><b>Visitas:</b> quais produtos cada pessoa abriu, e quando.</li><li><b>Buscas:</b> o que ela digitou, o que a busca mostrou e onde clicou.</li><li><b>Compras:</b> o que levou, de preferência com o cliente logado.</li><li><b>Opcional:</b> o preço de cada dia, para o aviso de promoção.</li></ul><p class="foot">A maioria das lojas virtuais já registra isso, na própria plataforma ou numa ferramenta de análise como o Google Analytics. Alguns meses de histórico bastam para começar (no teste foram 4).</p></div>
+        <div data-only="en"><h3>1. The data you already have</h3><ul><li><b>Visits:</b> which products each person opened, and when.</li><li><b>Searches:</b> what they typed, what the search showed and what they clicked.</li><li><b>Purchases:</b> what they bought, ideally with the customer logged in.</li><li><b>Optional:</b> each day's price, for the sale alert.</li></ul><p class="foot">Most online stores already record this, in the platform itself or in an analytics tool such as Google Analytics. A few months of history is enough to start (the test used 4).</p></div>
+      </div>
+      <div class="card how"><div class="hi"><svg class="i"><use href="#i-layout"/></svg></div>
+        <div data-only="pt"><h3>2. Onde a lista aparece</h3><ul><li><b>Página do produto:</b> "quem viu este também levou".</li><li><b>Carrinho:</b> "antes de pagar, não esqueça".</li><li><b>E-mail ou WhatsApp:</b> "o que você compra entrou em promoção".</li><li><b>Página inicial:</b> "escolhidos para você".</li></ul><p class="foot">Cada sugestão vai com o motivo, como na tela do exemplo.</p></div>
+        <div data-only="en"><h3>2. Where the list shows up</h3><ul><li><b>Product page:</b> "people who viewed this also bought".</li><li><b>Cart:</b> "before you pay, don't forget".</li><li><b>Email or WhatsApp:</b> "what you buy is on sale".</li><li><b>Home page:</b> "picked for you".</li></ul><p class="foot">Each suggestion comes with its reason, like on the example screen.</p></div>
+      </div>
+      <div class="card how"><div class="hi"><svg class="i"><use href="#i-ab"/></svg></div>
+        <div data-only="pt"><h3>3. Como saber se deu certo</h3><p style="margin-top:0"><b>Teste A/B:</b> metade dos clientes, sorteada, vê a lista nova; a outra metade vê a loja como está hoje. Depois de 2 a 4 semanas, você compara:</p><ul><li>vendas por visita;</li><li>valor médio do pedido;</li><li>quantas pessoas clicam na lista.</li></ul><p class="foot">Só fica com a lista se ela ganhar. O teste com o passado desta página não substitui esse passo.</p></div>
+        <div data-only="en"><h3>3. How to know it worked</h3><p style="margin-top:0"><b>A/B test:</b> a random half of customers sees the new list; the other half sees the store as it is today. After 2 to 4 weeks you compare:</p><ul><li>sales per visit;</li><li>average order value;</li><li>how many people click the list.</li></ul><p class="foot">Keep the list only if it wins. The test on past data in this page does not replace this step.</p></div>
+      </div>
+    </div>
+    <div class="card stepper">
+      <div class="st"><div class="n">1</div><div><b data-t="s1b">Juntar os dados</b><span data-t="s1s">visitas, buscas e compras</span></div></div>
+      <div class="st"><div class="n">2</div><div><b data-t="s2b">Medir com o passado</b><span data-t="s2s">como nesta página</span></div></div>
+      <div class="st"><div class="n">3</div><div><b data-t="s3b">Ligar para parte dos clientes</b><span data-t="s3s">página do produto ou carrinho</span></div></div>
+      <div class="st"><div class="n">4</div><div><b data-t="s4b">Comparar no teste A/B</b><span data-t="s4s">2 a 4 semanas</span></div></div>
+      <div class="st"><div class="n">5</div><div><b data-t="s5b">Ajustar e ampliar</b><span data-t="s5s">se a lista ganhar</span></div></div>
+    </div>
+  </section>
+
+  <!-- 5. Parte técnica -->
+  <div class="band" id="tecnica">
+    <div class="bi"><svg class="i"><use href="#i-chart"/></svg></div>
+    <div>
+      <h2 data-t="band_h">Parte técnica: como foi medido</h2>
+      <p data-t="band_p">Daqui para baixo, os detalhes do teste: os 7 jeitos de montar a lista, os números de cada um e visitas reais para você clicar. Se algum termo parecer estranho, o glossário logo abaixo explica.</p>
+    </div>
+  </div>
+
+  <section id="glossario">
+    <h2 data-t="gl_h">Glossário rápido</h2>
+    <p class="sub" data-t="gl_sub">O que quer dizer cada coisa que aparece na parte técnica.</p>
+    <dl class="gloss" data-only="pt">
+      <div class="card gl"><dt>Visita</dt><dd>Uma ida da pessoa à loja, de quando entra até quando sai. No teste, só contam as visitas que terminaram em compra.</dd></div>
+      <div class="card gl"><dt>Produto #25911</dt><dd>O código do produto. A loja trocou os nomes por números antes de liberar os dados; numa loja de verdade apareceria o nome, como "Whey 900 g chocolate".</dd></div>
+      <div class="card gl"><dt>Busca</dt><dd>Quando a pessoa digita algo ("digitou 3 termos") ou abre uma categoria ("abriu a categoria 965"). A loja mostra uma lista e ela clica em alguns.</dd></div>
+      <div class="card gl"><dt>Os 7 jeitos</dt><dd>7 maneiras de escolher os 10 produtos, da mais simples (os mais vendidos, iguais para todos) à mais completa (o híbrido com busca).</dd></div>
+      <div class="card gl"><dt>Híbrido</dt><dd>Junta as sugestões dos jeitos mais simples e um modelo (LightGBM) aprende com o histórico a melhor ordem. "Com busca" usa também as pistas da busca.</dd></div>
+      <div class="card gl"><dt>Tudo que comprou</dt><dd>Vale acertar qualquer produto que a pessoa comprou na visita, inclusive os que ela já tinha aberto.</dd></div>
+      <div class="card gl"><dt>Só produtos novos</dt><dd>Vale só acertar o que ela comprou sem ter visto antes. É a venda nova: a mais difícil e a que mais interessa à loja.</dd></div>
+      <div class="card gl"><dt>Recall@10 (acerto)</dt><dd>Dos produtos que ela comprou, quantos estavam entre os 10 sugeridos. 77% quer dizer: de cada 100 produtos comprados, 77 estavam na lista.</dd></div>
+      <div class="card gl"><dt>Acertou 1+</dt><dd>A lista teve pelo menos 1 produto que a pessoa comprou naquela visita.</dd></div>
+      <div class="card gl"><dt>Pontos</dt><dd>A diferença entre duas porcentagens. De 70,3% para 77,3% são +7,0 pontos.</dd></div>
+      <div class="card gl"><dt>Intervalo de 95%</dt><dd>A faixa onde o número verdadeiro deve estar, calculada sorteando as visitas 1.000 vezes. Se a faixa não encosta no zero, a diferença é real.</dd></div>
+      <div class="card gl"><dt>Cobertura</dt><dd>Quanto do catálogo aparece em alguma lista. Baixa quer dizer que o jeito sugere sempre os mesmos produtos.</dd></div>
+    </dl>
+    <dl class="gloss" data-only="en">
+      <div class="card gl"><dt>Visit</dt><dd>One trip to the store, from when the person arrives until they leave. The test only counts visits that ended in a purchase.</dd></div>
+      <div class="card gl"><dt>Product #25911</dt><dd>The product code. The store replaced names with numbers before releasing the data; in a real store you would see the name, like "Whey 900 g chocolate".</dd></div>
+      <div class="card gl"><dt>Search</dt><dd>When the person types something ("typed 3 terms") or opens a category ("opened category 965"). The store shows a list and they click some items.</dd></div>
+      <div class="card gl"><dt>The 7 approaches</dt><dd>7 ways to choose the 10 products, from the simplest (best sellers, the same for everyone) to the most complete (the hybrid with search).</dd></div>
+      <div class="card gl"><dt>Hybrid</dt><dd>Combines the suggestions of the simpler approaches, and a model (LightGBM) learns the best order from history. "With search" also uses the search clues.</dd></div>
+      <div class="card gl"><dt>Everything bought</dt><dd>Getting any product the person bought in the visit right counts, including the ones they had already opened.</dd></div>
+      <div class="card gl"><dt>New products only</dt><dd>Only getting right what they bought without having seen it before counts. This is the new sale: the hardest one and the one a store cares about most.</dd></div>
+      <div class="card gl"><dt>Recall@10 (hit rate)</dt><dd>Of the products they bought, how many were among the 10 suggested. 77% means: out of every 100 products bought, 77 were on the list.</dd></div>
+      <div class="card gl"><dt>Hit 1+</dt><dd>The list had at least 1 product the person bought in that visit.</dd></div>
+      <div class="card gl"><dt>Points</dt><dd>The difference between two percentages. From 70.3% to 77.3% is +7.0 points.</dd></div>
+      <div class="card gl"><dt>95% interval</dt><dd>The range where the true number should be, computed by resampling the visits 1,000 times. If the range does not touch zero, the difference is real.</dd></div>
+      <div class="card gl"><dt>Coverage</dt><dd>How much of the catalog shows up in some list. Low means the approach always suggests the same products.</dd></div>
+    </dl>
+  </section>
 
   <section id="comparacao">
     <h2 data-t="cmp_h">Os 7 jeitos, no mesmo teste</h2>
     <p class="sub" data-t="cmp_sub"></p>
+    <div class="reading"><svg class="i ic"><use href="#i-info"/></svg><p data-t="cmp_ler"></p></div>
     <div class="controls">
       <div class="seg" role="group" aria-label="Leitura" id="seg-leitura-1">
         <button type="button" data-leitura="geral" aria-pressed="true" data-t="l_geral">Tudo que comprou</button>
@@ -183,6 +583,17 @@ footer p{margin:4px 0}
   <section id="visita">
     <h2 data-t="vis_h">Veja uma visita de verdade</h2>
     <p class="sub" data-t="vis_sub"></p>
+    <div class="howto">
+      <div><span class="n">1</span><span data-t="how1">Escolha uma visita na lista ou pelas setas.</span></div>
+      <div><span class="n">2</span><span data-t="how2">No quadro "O que ela fez antes de pagar": buscas, produtos vistos e o que comprou.</span></div>
+      <div><span class="n">3</span><span data-t="how3">No quadro "Sugestões": os 10 produtos que o jeito escolhido sugeriu, com o motivo. Troque o jeito nos botões.</span></div>
+    </div>
+    <div class="keys">
+      <span class="k2"><span class="p buy">#25911</span><span data-t="key_buy">ela comprou nesta visita</span></span>
+      <span class="k2"><span class="p hl">#25911</span><span data-t="key_hl">está entre os 10 sugeridos</span></span>
+      <span class="k2"><span class="p">#25911</span><span data-t="key_plain">viu, mas não foi sugerido nem comprado</span></span>
+      <span class="k2"><span class="tiny" data-t="hoje">nesta visita</span><span data-t="key_hoje">aconteceu na mesma visita da compra</span></span>
+    </div>
     <div class="controls">
       <div class="nav">
         <button class="iconbtn" type="button" id="ant" aria-label="Visita anterior">&larr;</button>
@@ -222,6 +633,8 @@ var D = JSON.parse(document.getElementById("dados").textContent);
 var R = D.resultados, M = R.modelos, P = R.protocolo;
 var estado = {lang:"pt", leitura:"geral", visita:0, modelo:"hibrido_com_busca"};
 try { var s = localStorage.getItem("pc-lang"); if (s === "en" || s === "pt") estado.lang = s; } catch(e) {}
+if (location.hash === "#en") estado.lang = "en";
+if (location.hash === "#pt") estado.lang = "pt";
 
 var NOMES = {
   pt:{popularidade:"Mais vendidos", visto:"Repetir o que viu ou comprou", coocorrencia:"Item a item", sequencial:"Sequencial (SASRec)", busca:"Só a busca", hibrido_sem_busca:"Híbrido sem busca", hibrido_com_busca:"Híbrido com busca"},
@@ -235,17 +648,44 @@ var DESC = {
 var T = {
   pt:{
     autor:"Rafael Bueno · projeto de portfólio",
-    h1:"Os 10 produtos que a pessoa vai comprar, com o porquê",
-    lead:"Comparamos 7 jeitos de sugerir a próxima compra numa loja online real. A pergunta principal: usar também o que a pessoa <b>pesquisou</b>, e não só o que ela viu e comprou, melhora a sugestão? Tudo medido no mesmo teste, com dados que nenhum modelo viu no treino.",
+    nav1:"Exemplo", nav2:"O que a loja ganha", nav3:"Como fazer", nav4:"Parte técnica",
+    cta1:"Ver um exemplo", cta2:"Ver os números medidos",
+    ph_loja:"Sua loja", ph_tit:"Sugestões para você", ph_de:"6 de 10", ph_mais:"e mais 4 sugestões",
+    p1n:"Whey 900 g baunilha", p1r:"Você clicou nele na busca por \"whey\"",
+    p2n:"Whey 900 g chocolate", p2r:"Apareceu em 2º na sua busca por \"whey\"",
+    p3n:"Bebida proteica chocolate, 6 un.", p3r:"Você comprou há 2 semanas",
+    p4n:"Bebida proteica morango", p4r:"Quem comprou a de chocolate também levou esta",
+    p5n:"Barra de proteína amendoim", p5r:"Você viu agora há pouco",
+    p6n:"Coqueteleira 600 ml", p6r:"Costuma ser vista logo depois do whey",
+    sig_busca:"busca", sig_comprou:"comprou antes", sig_junto:"quem comprou também levou", sig_viu:"o que você viu", sig_seq:"sequência",
+    flag:"comprou",
+    cap1:"Etiqueta azul: a pista veio da busca, a parte que este projeto mediu.", cap2:"Fundo verde: o que ela comprou no fim.",
+    pts_curto:"pontos",
+    vs_h:"A lista feita para cada pessoa contra a lista igual para todos",
+    vs_g1:"Acerto contando tudo que a pessoa comprou", vs_g2:"Acerto só nos produtos que ela não tinha visto (a venda nova)",
+    vs_pop:"Mais vendidos (igual para todos)", vs_rep:"Repetir o que ela já viu", vs_sem:"Lista para cada pessoa, sem busca", vs_hib:"Lista para cada pessoa, com busca",
+    vs_nota:"Mostrar de novo o que a pessoa já viu acerta muito, mas quase não traz venda nova. O que traz venda nova é a busca.",
+    src_h:"De onde vêm esses números",
+    s1b:"Juntar os dados", s1s:"visitas, buscas e compras", s2b:"Medir com o passado", s2s:"como nesta página",
+    s3b:"Ligar para parte dos clientes", s3s:"página do produto ou carrinho", s4b:"Comparar no teste A/B", s4s:"2 a 4 semanas",
+    s5b:"Ajustar e ampliar", s5s:"se a lista ganhar",
+    band_h:"Parte técnica: como foi medido",
+    band_p:"Daqui para baixo, os detalhes do teste: os 7 jeitos de montar a lista, os números de cada um e visitas reais para você clicar. Se algum termo parecer estranho, o glossário logo abaixo explica.",
+    gl_h:"Glossário rápido", gl_sub:"O que quer dizer cada coisa que aparece na parte técnica.",
     cmp_h:"Os 7 jeitos, no mesmo teste",
     cmp_sub:"Teste: as {casos} visitas com compra de maio de 2016. Os modelos só conhecem o que aconteceu até 30/04/2016. Para cada visita, o modelo olha o que a pessoa viu e pesquisou antes de pagar e sugere 10 produtos.",
+    cmp_ler:"<b>Como ler:</b> cada linha é um jeito de montar a lista de 10. A barra é o acerto (recall@10): quanto maior, melhor. Barra azul = usa a busca. A linha destacada é a melhor. Os botões trocam entre \"tudo que comprou\" e \"só produtos novos\" (veja o glossário).",
     l_geral:"Tudo que comprou", l_desc:"Só produtos novos",
-    th_modelo:"Modelo", th_recall:"Recall@10", th_ndcg:"NDCG@10", th_acerto:"Acertou 1+", th_cob:"Cobertura", th_lat:"Tempo por pessoa",
+    th_modelo:"Jeito de sugerir", th_recall:"Acerto (recall@10)", th_ndcg:"NDCG@10", th_acerto:"Acertou 1+", th_cob:"Cobertura", th_lat:"Tempo por pessoa",
     leg_b:"usa a busca", leg_n:"não usa a busca", leg_ci:"Entre parênteses: intervalo de 95% (sorteio das visitas, 1.000 vezes)",
     vis_h:"Veja uma visita de verdade",
-    vis_sub:"{n} visitas sorteadas do teste (não escolhidas a dedo). À esquerda, o que a pessoa fez antes de pagar. À direita, os 10 sugeridos pelo modelo escolhido e quais ela comprou de fato.",
+    vis_sub:"{n} visitas sorteadas do teste (não escolhidas a dedo), com os produtos em código porque a loja cifrou os nomes.",
+    how1:"Escolha uma visita na lista ou pelas setas.",
+    how2:"No quadro \"O que ela fez antes de pagar\": buscas, produtos vistos e o que comprou.",
+    how3:"No quadro \"Sugestões\": os 10 produtos que o jeito escolhido sugeriu, com o motivo. Troque o jeito nos botões.",
+    key_buy:"ela comprou nesta visita", key_hl:"está entre os 10 sugeridos", key_plain:"viu, mas não foi sugerido nem comprado", key_hoje:"aconteceu na mesma visita da compra",
     visita:"Visita", logada:"logada", texto:"digitou busca", novo_tag:"comprou produto novo", sem_novos:"Nesta visita ela só comprou o que já tinha visto, então não há produto novo para acertar. Troque de visita (as marcadas com \"comprou produto novo\") ou volte para \"tudo que comprou\".",
-    antes:"Antes de pagar", buscas:"Buscas", vistos:"Viu nesta visita", vistos_antes:"Viu em visitas anteriores", compras_antes:"Comprou antes", comprou:"Comprou nesta visita",
+    antes:"O que ela fez antes de pagar", buscas:"Buscas", vistos:"Viu nesta visita", vistos_antes:"Viu em visitas anteriores", compras_antes:"Comprou antes", comprou:"Comprou nesta visita",
     busca_texto_l:"Digitou {n} termo(s)", busca_cat:"Abriu a categoria {c}", busca_mostrou:"a loja mostrou {n} produtos", clicou:"clicou em",
     hoje:"nesta visita", sem:"nada", mais:"e mais {n}",
     sug:"Sugestões: {m}", acertos:"<span>{a}</span> dos 10 foram comprados nesta visita", acertos_desc:"<span>{a}</span> dos 10 produtos novos foram comprados",
@@ -259,12 +699,8 @@ var T = {
     c1h:"O teste", c1:"<ul><li>Base: Diginetica (CIKM Cup 2016), loja online real: {views} visualizações, {buscas} buscas e {compras} compras de jan a jun de 2016.</li><li>Treino até 31/03 para ajustar o híbrido em abril; treino até 30/04 para medir em maio.</li><li>Cada caso é uma visita com compra, cortada no momento de pagar.</li></ul>",
     c2h:"As medidas", c2:"<ul><li><b>Recall@10</b>: dos produtos que ela comprou, quantos estavam entre os 10.</li><li><b>NDCG@10</b>: o mesmo, valendo mais acertar no topo da lista.</li><li><b>Cobertura</b>: quanto do catálogo aparece em alguma lista (baixa = sugere sempre os mesmos).</li><li><b>Tempo</b>: para montar a lista de uma pessoa, num computador comum, sem placa de vídeo.</li></ul>",
     c3h:"Limites honestos", c3:"<ul><li>Na base, quase ninguém está logado: o sinal \"comprou antes\" aparece em só {ca} das {casos} visitas. No iFood todo mundo está logado.</li><li>\"Busca\" aqui é quase sempre abrir uma categoria; só {txt} visitas digitaram termos.</li><li>Sem preço por dia: a promoção é simulação.</li><li>Teste offline: mostra o que daria certo no passado, não substitui um teste A/B.</li></ul>",
-    rodape1:"Dados: Diginetica, CIKM Cup 2016 (trilha 2), uso de pesquisa. Os dados brutos não ficam no repositório: o script baixa da fonte. Código sob licença MIT.",
+    rodape1:"Dados: Diginetica, CIKM Cup 2016 (trilha 2), uso de pesquisa. Os dados brutos não ficam no repositório: o script baixa da fonte. Código sob licença MIT. O exemplo do whey no topo é ilustrativo.",
     rodape2:"Feito por Rafael Bueno, com apoio de IA. Medido em {data}.",
-    k1:"das visitas com pelo menos 1 dos 10 comprado (híbrido com busca)",
-    k2:"de recall a mais com a busca, nos produtos que a pessoa ainda não tinha visto",
-    k3:"de recall a mais com a busca, contando tudo que ela comprou",
-    k4:"para montar a lista de uma pessoa (híbrido com busca, CPU)",
     efeito:"<b>Quanto a busca ajuda.</b> Mesmo modelo, com e sem os sinais da busca, comparado visita a visita: <b>{dg}</b> pontos de recall@10 contando tudo que ela comprou (intervalo {dg1} a {dg2}) e <b>{dd}</b> pontos nos produtos novos (intervalo {dd1} a {dd2}). {conclusao}",
     conc_sim:"Os dois intervalos ficam acima de zero: a busca ajuda de verdade, e ajuda mais justamente onde é difícil, no produto que a pessoa ainda não viu.",
     conc_parcial:"A busca ajuda mais nos produtos novos; no total, o ganho é menor.",
@@ -277,17 +713,44 @@ var T = {
   },
   en:{
     autor:"Rafael Bueno · portfolio project",
-    h1:"The 10 products a person will buy next, and why",
-    lead:"We compare 7 ways to suggest the next purchase in a real online store. The main question: does using what the person <b>searched</b> for, and not only what they viewed and bought, make suggestions better? Everything is measured on the same test, with data no model saw during training.",
+    nav1:"Example", nav2:"What your store gains", nav3:"How to do it", nav4:"Technical part",
+    cta1:"See an example", cta2:"See the measured numbers",
+    ph_loja:"Your store", ph_tit:"Suggestions for you", ph_de:"6 of 10", ph_mais:"and 4 more suggestions",
+    p1n:"Whey 900 g vanilla", p1r:"You clicked it in your search for \"whey\"",
+    p2n:"Whey 900 g chocolate", p2r:"Ranked #2 in your search for \"whey\"",
+    p3n:"Chocolate protein drink, 6 pack", p3r:"You bought it 2 weeks ago",
+    p4n:"Strawberry protein drink", p4r:"People who bought the chocolate one also bought this",
+    p5n:"Peanut protein bar", p5r:"You viewed it a moment ago",
+    p6n:"Shaker 600 ml", p6r:"Usually viewed right after whey",
+    sig_busca:"search", sig_comprou:"bought before", sig_junto:"bought together", sig_viu:"what you viewed", sig_seq:"sequence",
+    flag:"bought",
+    cap1:"Blue tag: the clue came from search, the part this project measured.", cap2:"Green background: what she bought in the end.",
+    pts_curto:"points",
+    vs_h:"A list made for each person versus the same list for everyone",
+    vs_g1:"Hit rate counting everything the person bought", vs_g2:"Hit rate only on products they had not seen (the new sale)",
+    vs_pop:"Best sellers (same for everyone)", vs_rep:"Repeat what they already viewed", vs_sem:"List for each person, without search", vs_hib:"List for each person, with search",
+    vs_nota:"Showing again what the person already viewed gets a lot right, but brings almost no new sales. What brings new sales is search.",
+    src_h:"Where these numbers come from",
+    s1b:"Gather the data", s1s:"visits, searches and purchases", s2b:"Measure on the past", s2s:"like this page",
+    s3b:"Turn it on for some customers", s3s:"product page or cart", s4b:"Compare in an A/B test", s4s:"2 to 4 weeks",
+    s5b:"Adjust and expand", s5s:"if the list wins",
+    band_h:"Technical part: how it was measured",
+    band_p:"From here down, the test details: the 7 ways to build the list, the numbers for each one and real visits you can click through. If a term looks strange, the glossary right below explains it.",
+    gl_h:"Quick glossary", gl_sub:"What each thing in the technical part means.",
     cmp_h:"7 approaches, one test",
     cmp_sub:"Test: the {casos} visits with a purchase in May 2016. Models only know what happened until 04/30/2016. For each visit, the model looks at what the person viewed and searched before paying and suggests 10 products.",
+    cmp_ler:"<b>How to read it:</b> each row is one way to build the list of 10. The bar is the hit rate (recall@10): higher is better. Blue bar = uses search. The highlighted row is the best one. The buttons switch between \"everything bought\" and \"new products only\" (see the glossary).",
     l_geral:"Everything bought", l_desc:"New products only",
-    th_modelo:"Model", th_recall:"Recall@10", th_ndcg:"NDCG@10", th_acerto:"Hit 1+", th_cob:"Coverage", th_lat:"Time per person",
+    th_modelo:"Approach", th_recall:"Recall@10", th_ndcg:"NDCG@10", th_acerto:"Hit 1+", th_cob:"Coverage", th_lat:"Time per person",
     leg_b:"uses search", leg_n:"does not use search", leg_ci:"In parentheses: 95% interval (visits resampled 1,000 times)",
     vis_h:"Look at a real visit",
-    vis_sub:"{n} visits drawn at random from the test (not cherry-picked). Left: what the person did before paying. Right: the 10 products the chosen model suggested and which ones they actually bought.",
+    vis_sub:"{n} visits drawn at random from the test (not cherry-picked), with products shown as codes because the store encoded the names.",
+    how1:"Pick a visit from the list or with the arrows.",
+    how2:"In the \"What they did before paying\" panel: searches, viewed products and what they bought.",
+    how3:"In the \"Suggestions\" panel: the 10 products the chosen approach suggested, with the reason. Switch approaches with the buttons.",
+    key_buy:"bought in this visit", key_hl:"is among the 10 suggested", key_plain:"viewed, but not suggested or bought", key_hoje:"happened in the same visit as the purchase",
     visita:"Visit", logada:"logged in", texto:"typed a search", novo_tag:"bought something new", sem_novos:"In this visit they only bought what they had already viewed, so there is no new product to get right. Pick another visit (the ones marked \"bought something new\") or go back to \"everything bought\".",
-    antes:"Before paying", buscas:"Searches", vistos:"Viewed in this visit", vistos_antes:"Viewed in earlier visits", compras_antes:"Bought before", comprou:"Bought in this visit",
+    antes:"What they did before paying", buscas:"Searches", vistos:"Viewed in this visit", vistos_antes:"Viewed in earlier visits", compras_antes:"Bought before", comprou:"Bought in this visit",
     busca_texto_l:"Typed {n} term(s)", busca_cat:"Opened category {c}", busca_mostrou:"the store showed {n} products", clicou:"clicked",
     hoje:"in this visit", sem:"nothing", mais:"and {n} more",
     sug:"Suggestions: {m}", acertos:"<span>{a}</span> of the 10 were bought in this visit", acertos_desc:"<span>{a}</span> of the 10 new products were bought",
@@ -301,12 +764,8 @@ var T = {
     c1h:"The test", c1:"<ul><li>Data: Diginetica (CIKM Cup 2016), a real online store: {views} product views, {buscas} searches and {compras} purchases from Jan to Jun 2016.</li><li>Training until 03/31 to fit the hybrid on April; training until 04/30 to measure on May.</li><li>Each case is a visit with a purchase, cut at the moment of paying.</li></ul>",
     c2h:"The metrics", c2:"<ul><li><b>Recall@10</b>: of the products bought, how many were among the 10.</li><li><b>NDCG@10</b>: the same, but hits at the top count more.</li><li><b>Coverage</b>: how much of the catalog shows up in some list (low = always the same suggestions).</li><li><b>Time</b>: to build one person's list on a regular computer, no GPU.</li></ul>",
     c3h:"Honest limits", c3:"<ul><li>Almost nobody is logged in: the \"bought before\" signal shows up in only {ca} of {casos} visits. On iFood everyone is logged in.</li><li>\"Search\" here is mostly opening a category; only {txt} visits typed terms.</li><li>No daily prices: the sale alert is a simulation.</li><li>Offline test: shows what would have worked in the past; it does not replace an A/B test.</li></ul>",
-    rodape1:"Data: Diginetica, CIKM Cup 2016 (track 2), research use. Raw data is not in the repository: the script downloads it from the source. Code under the MIT license.",
+    rodape1:"Data: Diginetica, CIKM Cup 2016 (track 2), research use. Raw data is not in the repository: the script downloads it from the source. Code under the MIT license. The whey example at the top is illustrative.",
     rodape2:"Built by Rafael Bueno, with AI assistance. Measured on {data}.",
-    k1:"of visits with at least 1 of the 10 bought (hybrid with search)",
-    k2:"more recall with search, on products the person had not seen yet",
-    k3:"more recall with search, counting everything bought",
-    k4:"to build one person's list (hybrid with search, CPU)",
     efeito:"<b>How much search helps.</b> Same model, with and without the search signals, compared visit by visit: <b>{dg}</b> recall@10 points counting everything bought (interval {dg1} to {dg2}) and <b>{dd}</b> points on new products (interval {dd1} to {dd2}). {conclusao}",
     conc_sim:"Both intervals stay above zero: search really helps, and it helps more exactly where it is hard, on products the person has not seen yet.",
     conc_parcial:"Search helps more on new products; overall the gain is smaller.",
@@ -319,7 +778,7 @@ var T = {
   }
 };
 
-function t(k, v){ var s = (T[estado.lang][k] || T.pt[k] || k); if (v) for (var x in v) s = s.split("{"+x+"}").join(v[x]); return s; }
+function t(k, v){ var s = (T[estado.lang][k] !== undefined ? T[estado.lang][k] : (T.pt[k] !== undefined ? T.pt[k] : k)); if (v) for (var x in v) s = s.split("{"+x+"}").join(v[x]); return s; }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
 function num(x, d){ return x.toLocaleString(estado.lang === "pt" ? "pt-BR" : "en-US", {minimumFractionDigits:d, maximumFractionDigits:d}); }
 function pct(x, d){ return num(x*100, d === undefined ? 1 : d) + "%"; }
@@ -353,6 +812,7 @@ function aplicarTextos(){
   var vars = {casos:inteiro(pc.casos), n:D.visitas.length, views:inteiro(1235380), buscas:inteiro(923127), compras:inteiro(18025),
               ca:inteiro(pc.com_compra_anterior), txt:inteiro(pc.com_busca_texto), data:data(D.medido_em || "2026-11-08")};
   document.querySelectorAll("[data-t]").forEach(function(el){ el.innerHTML = t(el.getAttribute("data-t"), vars); });
+  document.querySelectorAll("[data-flag]").forEach(function(el){ el.setAttribute("data-flag", t("flag")); });
   document.querySelectorAll("[data-lang]").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-lang") === estado.lang ? "true" : "false"); });
   document.getElementById("ant").setAttribute("aria-label", estado.lang === "pt" ? "Visita anterior" : "Previous visit");
   document.getElementById("prox").setAttribute("aria-label", estado.lang === "pt" ? "Próxima visita" : "Next visit");
@@ -360,15 +820,21 @@ function aplicarTextos(){
   grid.innerHTML = ["1","2","3"].map(function(k){ return '<div class="card box"><h3>' + t("c"+k+"h") + "</h3>" + t("c"+k, vars) + "</div>"; }).join("");
 }
 
-function kpis(){
-  var h = M.hibrido_com_busca, e = R.efeito_da_busca;
-  var cards = [
-    [pts(e.descoberta.recall.media) + " pts", t("k2")],
-    [pts(e.geral.recall.media) + " pts", t("k3")],
-    [pct(h.geral.acerto.media, 0), t("k1")],
-    [num(h.latencia_ms.mediana, 0) + " ms", t("k4")]
-  ];
-  document.getElementById("kpis").innerHTML = cards.map(function(c){ return '<div class="kpi"><div class="v">' + c[0] + '</div><div class="l">' + c[1] + "</div></div>"; }).join("");
+function valores(){
+  var h = M.hibrido_com_busca, sb = M.hibrido_sem_busca, e = R.efeito_da_busca;
+  var V = {
+    acerto: pct(h.geral.acerto.media, 0), acerto_n: num(h.geral.acerto.media*100, 0),
+    dd: pts(e.descoberta.recall.media), dg: pts(e.geral.recall.media),
+    novo_sem: pct(sb.descoberta.recall.media), novo_com: pct(h.descoberta.recall.media),
+    lat: num(h.latencia_ms.mediana, 0) + " ms", pop: pct(M.popularidade.geral.recall.media),
+    casos: inteiro(P.teste.casos.casos)
+  };
+  document.querySelectorAll("[data-v]").forEach(function(el){ el.textContent = V[el.getAttribute("data-v")]; });
+  document.querySelectorAll(".vrow").forEach(function(el){
+    var r = M[el.getAttribute("data-m")][el.getAttribute("data-l")].recall.media;
+    el.querySelector(".fl").style.width = (100*r).toFixed(1) + "%";
+    el.querySelector(".vv").textContent = pct(r);
+  });
 }
 
 function tabela(){
@@ -453,7 +919,7 @@ function leitura(nova){
   document.querySelectorAll("[data-leitura]").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-leitura") === nova ? "true" : "false"); });
   tabela(); visita();
 }
-function tudo(){ aplicarTextos(); kpis(); tabela(); seletor(); visita(); }
+function tudo(){ aplicarTextos(); valores(); tabela(); seletor(); visita(); }
 
 document.addEventListener("click", function(ev){
   var b = ev.target.closest("button"); if (!b) return;

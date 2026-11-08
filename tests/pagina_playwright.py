@@ -1,4 +1,4 @@
-"""Confere a página no navegador (Chromium sem janela): 1440 px e 390 px, PT e EN, cliques.
+"""Confere a página no navegador (Chromium sem janela): 1440 px e 390 px (e 1024, 820, 360), PT e EN, cliques.
 
 Uso: python3 tests/pagina_playwright.py [docs/index.html] [pasta_das_capturas]
 Não roda no pytest (precisa de navegador). Sai com código 1 se algo falhar.
@@ -23,6 +23,14 @@ def main() -> int:
     falhas: list[str] = []
     with sync_playwright() as p:
         nav = p.chromium.launch(executable_path=CHROMIUM)
+        for largura in (1024, 820, 360):
+            pg = nav.new_page(viewport={"width": largura, "height": 800})
+            pg.goto(PAGINA.resolve().as_uri())
+            pg.wait_for_selector("#tabela tbody tr")
+            lateral = pg.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
+            if lateral > 0:
+                falhas.append(f"{largura} px: rolagem lateral de {lateral} px")
+            pg.close()
         for largura, altura, nome in ((1440, 900, "pc"), (390, 844, "celular")):
             pg = nav.new_page(viewport={"width": largura, "height": altura}, device_scale_factor=1)
             erros: list[str] = []
@@ -38,8 +46,30 @@ def main() -> int:
                 falhas.append(f"{nome}: rolagem lateral de {lateral} px")
             if pg.locator("ol.recs li").count() != 10:
                 falhas.append(f"{nome}: lista sem 10 sugestões")
+            # parte para o dono de loja: abertura, exemplo ilustrativo, ganhos medidos, como fazer, glossário
+            if "Mostre a cada cliente" not in pg.inner_text("#loja h1:visible"):
+                falhas.append(f"{nome}: abertura para a loja não apareceu")
+            if "ilustrativo" not in pg.inner_text("#exemplo").lower():
+                falhas.append(f"{nome}: o exemplo não diz que é ilustrativo")
+            for sel in ("#exemplo", "#ganho", "#implementar", "#glossario"):
+                if not pg.locator(sel).is_visible():
+                    falhas.append(f"{nome}: seção {sel} não aparece")
+            vazios = pg.evaluate(
+                "[...document.querySelectorAll('[data-v]')].filter(e => e.offsetParent && !e.textContent.trim()).length"
+            )
+            if vazios:
+                falhas.append(f"{nome}: {vazios} número(s) sem valor")
+            ganho = pg.inner_text("#ganho")
+            for esperado in ("84%", "+20,7", "25 ms", "R$ 0", "Produto #25911"):
+                if esperado not in ganho:
+                    falhas.append(f"{nome}: falta {esperado!r} em 'o que a loja ganha'")
+            if pg.locator("#glossario dl:visible .gl").count() < 10:
+                falhas.append(f"{nome}: glossário com menos de 10 termos")
             pg.screenshot(path=str(CAPTURAS / f"{nome}-inicio.png"), full_page=False)
             pg.screenshot(path=str(CAPTURAS / f"{nome}-inteira.png"), full_page=True)
+            for sel, arq in (("#exemplo", "exemplo"), ("#ganho", "ganho"), ("#implementar", "implementar"),
+                             ("#glossario", "glossario"), ("#comparacao", "tabela")):
+                pg.locator(sel).screenshot(path=str(CAPTURAS / f"{nome}-{arq}.png"))
             # troca de modelo, de visita e de leitura
             for modelo in ("popularidade", "visto", "coocorrencia", "sequencial", "busca", "hibrido_sem_busca",
                            "hibrido_com_busca"):
@@ -55,10 +85,19 @@ def main() -> int:
             pg.click("[data-lang='en']")
             if "Look at a real visit" not in pg.inner_text("#visita h2"):
                 falhas.append(f"{nome}: inglês não aplicou")
+            if "Show each customer" not in pg.inner_text("#loja h1:visible"):
+                falhas.append(f"{nome}: abertura em inglês não aplicou")
+            if "illustrative" not in pg.inner_text("#exemplo").lower():
+                falhas.append(f"{nome}: exemplo em inglês não diz que é ilustrativo")
+            texto_en = pg.inner_text("body")
+            for proibido in ("—", "–", "undefined", "NaN", "{"):
+                if proibido in texto_en:
+                    falhas.append(f"{nome}: texto em inglês com {proibido!r}")
             lateral = pg.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
             if lateral > 0:
                 falhas.append(f"{nome}: rolagem lateral de {lateral} px em inglês")
             pg.screenshot(path=str(CAPTURAS / f"{nome}-en.png"), full_page=False)
+            pg.locator("#exemplo").screenshot(path=str(CAPTURAS / f"{nome}-exemplo-en.png"))
             pg.locator("#visita").screenshot(path=str(CAPTURAS / f"{nome}-visita-en.png"))
             pg.click("[data-lang='pt']")
             texto = pg.inner_text("body")
